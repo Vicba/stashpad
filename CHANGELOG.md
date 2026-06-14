@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed PyPI package from `stash-cli` to `stashpad` (CLI command remains `stash`)
+
 ### Removed
 
 - REST API (`api.py`), FastAPI/uvicorn/gunicorn dependencies, and `poe api` task — Stash is CLI-only
@@ -27,5 +31,5 @@ Initial release of **Stash CLI** — a personal developer reference manager.
 - Rich terminal output, shell autocompletion, atomic vault writes
 - NumPy-style docstrings and doctest coverage on core modules
 
-[Unreleased]: https://github.com/victorbarra/stash-cli/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/victorbarra/stash-cli/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Vicba/stash-cli/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Vicba/stash-cli/releases/tag/v0.1.0

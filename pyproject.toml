@@ -3,14 +3,16 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]  # https://python-poetry.org/docs/pyproject/
-name = "stash-cli"
+name = "stashpad"
 version = "0.1.0"
-description = "Stash — personal developer reference manager CLI."
+description = "Stashpad — personal developer reference manager CLI."
 authors = ["Victor Barra <victor.barra@live.be>"]
 readme = "README.md"
-repository = "https://github.com/victorbarra/stash-cli"
+repository = "https://github.com/Vicba/stash-cli"
 
 license = "MIT"
+
+packages = [{ include = "stash_cli", from = "src" }]
 
 keywords = ["python", "cli", "package", "typer"]
 classifiers = [

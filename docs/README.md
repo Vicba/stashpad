@@ -1,6 +1,6 @@
-# Stash CLI documentation
+# Stashpad documentation
 
-Reference documentation for **Stash** — a personal developer reference manager.
+Reference documentation for **Stashpad** — a personal developer reference manager (`stash` CLI).
 
 | Guide | Description |
 |-------|-------------|

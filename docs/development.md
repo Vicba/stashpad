@@ -1,11 +1,11 @@
 # Development
 
-Guide for contributors and local development of Stash CLI.
+Guide for contributors and local development of Stashpad.
 
 ## Setup
 
 ```bash
-git clone https://github.com/victorbarra/stash-cli.git
+git clone https://github.com/Vicba/stash-cli.git
 cd stash-cli
 poetry install
 ```

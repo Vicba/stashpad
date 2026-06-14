@@ -1,6 +1,6 @@
-# Stash CLI
+# Stashpad
 
-**Stash** is a personal developer reference manager.
+**Stashpad** is a personal developer reference manager (`stash` on the command line).
 
 Save URLs, shell commands, code snippets, and notes. Tag them, search, export, and browse from the terminal.
 
@@ -8,7 +8,7 @@ Full reference: [`docs/`](docs/README.md)
 
 ## How it works
 
-Stash is a **local, searchable cheat sheet** for developers. You save things you look up repeatedly — shell commands, snippets, URLs, notes — and find them again from the terminal.
+Stashpad is a **local, searchable cheat sheet** for developers. You save things you look up repeatedly — shell commands, snippets, URLs, notes — and find them again from the terminal.
 
 ### Data storage
 
@@ -63,23 +63,26 @@ CLI commands  ──►  storage.py  ──►  vault.json
 ## Quick start
 
 ```bash
-git clone https://github.com/victorbarra/stash-cli.git
-cd stash-cli
-poetry install
+pip install stashpad
+# or: pipx install stashpad
 
-# Initialize your vault
-poetry run stash init --name my-vault
+stash init --name my-vault
 
-# Add a reference
-poetry run stash entry add "Docker prune" "docker system prune -af" \
+stash entry add "Docker prune" "docker system prune -af" \
   --tag devops --tag docker --url https://docs.docker.com
 
-# List and search
-poetry run stash entry list --tag devops
-poetry run stash search "prune"
+stash entry list --tag devops
+stash search "prune"
+stash --json entry list
+```
 
-# JSON output mode
-poetry run stash --json entry list
+From source:
+
+```bash
+git clone https://github.com/Vicba/stash-cli.git
+cd stash-cli
+poetry install
+poetry run stash init --name my-vault
 ```
 
 ## CLI commands

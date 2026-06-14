@@ -8,19 +8,26 @@
 ## Install
 
 ```bash
-git clone https://github.com/victorbarra/stash-cli.git
-cd stash-cli
-poetry install
+pip install stashpad
+# or: pipx install stashpad
 ```
 
 Verify the CLI:
 
 ```bash
-poetry run stash --version
-poetry run stash --help
+stash --version
+stash --help
 ```
 
-After install, the `stash` command is available via `poetry run stash` or from an activated Poetry shell.
+### Install from source
+
+```bash
+git clone https://github.com/Vicba/stash-cli.git
+cd stash-cli
+poetry install
+```
+
+After a source install, use `poetry run stash` or activate the Poetry shell.
 
 ## Initialize a vault
 
