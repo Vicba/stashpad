@@ -1,0 +1,45 @@
+# Stashpad
+
+> Stashpad is a local, terminal-based developer reference manager. Install with `pip install stashpad`; run as `stash`. Save shell commands, code snippets, URLs, and notes in a searchable JSON vault at `~/.config/stash/vault.json`.
+
+Stashpad is CLI-only (Python 3.8–3.12, Typer + Pydantic). There is no server or cloud sync — data stays on disk in one file per vault.
+
+- **PyPI package:** `stashpad`
+- **CLI command:** `stash`
+- **Python module:** `stash_cli`
+- **Default vault:** `~/.config/stash/vault.json` (override with `STASH_DATA_DIR`, `--config-dir`, or `stash init [data_dir]`)
+- **Scripting:** pass `--json` before subcommands for machine-readable output
+- **Repository:** https://github.com/Vicba/stash-cli
+
+Typical workflow:
+
+```bash
+pip install stashpad
+stash init --name my-vault
+stash entry add "Docker prune" "docker system prune -af" --tag devops
+stash entry list --tag devops
+stash search "prune"
+stash export json ./backup.json
+stash import --from-file ./backup.json
+```
+
+## Documentation
+
+- [README](https://raw.githubusercontent.com/Vicba/stash-cli/main/README.md): Project overview, architecture, and quick start
+- [Getting started](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/getting-started.md): Install, init vault, first entries, backup
+- [CLI reference](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/cli-reference.md): All commands, flags, and aliases
+- [Configuration](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/configuration.md): `STASH_*` env vars and vault paths
+- [Data model](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/data-model.md): `vault.json` schema, entries, tags, import/export formats
+
+## Examples
+
+- [Examples index](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/README.md): Runnable demo scripts and sample data
+- [Daily workflow recipe](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/recipes/daily-workflow.md): Common day-to-day `stash` usage
+- [Backup and restore recipe](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/recipes/backup-and-restore.md): Export/import workflow
+- [Sample entries JSON](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/data/sample-entries.json): Example import payload
+
+## Optional
+
+- [Development guide](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/development.md): Tests, lint, project layout, contributing
+- [Changelog](https://raw.githubusercontent.com/Vicba/stash-cli/main/CHANGELOG.md): Release history
+- [pyproject.toml](https://raw.githubusercontent.com/Vicba/stash-cli/main/pyproject.toml): Package metadata, dependencies, and entry points
