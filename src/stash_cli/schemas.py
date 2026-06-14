@@ -235,29 +235,6 @@ class ImportPayload(BaseModel):
         return cls(entries=[EntryCreate.model_validate(item) for item in raw_entries])
 
 
-class HealthResponse(BaseModel):
-    """API health check response."""
-
-    status: str
-    version: str
-    app_name: str
-
-
-class RootResponse(BaseModel):
-    """API root endpoint response."""
-
-    message: str
-    version: str
-    docs: str
-
-
-class TagsResponse(BaseModel):
-    """Response wrapper for tag lists."""
-
-    tags: List[str]
-    prefix: Optional[str] = None
-
-
 class AppContextSchema(BaseModel):
     """Shared CLI context passed via ``ctx.obj``.
 

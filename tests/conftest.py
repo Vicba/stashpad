@@ -1,4 +1,4 @@
-"""Pytest fixtures for Stash CLI and API tests."""
+"""Pytest fixtures for Stash CLI tests."""
 
 from __future__ import annotations
 

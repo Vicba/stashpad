@@ -18,7 +18,6 @@ source "$(dirname "$0")/_common.sh"
 reset_demo_vault
 stash init --name json-demo --force
 
-stash entry add "API health" "curl -s localhost:8000/health | jq" --tag api
 stash entry add "JSON list" "stash --json entry list" --tag cli
 
 # --json must come before the subcommand: stash --json entry list
@@ -40,7 +39,7 @@ for e in json.load(sys.stdin):
 fi
 
 banner "JSON output: search"
-stash --json search "api"
+stash --json search "json"
 
 # Useful for debugging env/config issues
 banner "JSON output: config"

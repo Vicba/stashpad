@@ -48,12 +48,6 @@ class Settings(BaseSettings):
         Preferred editor command.
     max_entries : int
         Soft limit for vault size.
-    api_host : str
-        API bind host.
-    api_port : int
-        API bind port.
-    api_reload : bool
-        Enable uvicorn reload in dev.
 
     Examples
     --------
@@ -75,10 +69,6 @@ class Settings(BaseSettings):
     default_format: str = "table"
     editor: str = "vim"
     max_entries: int = Field(default=10_000, ge=1)
-
-    api_host: str = "0.0.0.0"
-    api_port: int = Field(default=8000, ge=1, le=65535)
-    api_reload: bool = False
 
 
 def get_settings(data_dir: Optional[Path] = None) -> Settings:

@@ -71,8 +71,6 @@ body:
       label: Where did the bug occur?
       options:
         - CLI
-        - REST API
-        - Both
         - Not sure
     validations:
       required: true

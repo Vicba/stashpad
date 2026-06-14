@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest a new command, flag, API endpoint, or improvement
+description: Suggest a new command, flag, or improvement
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
@@ -7,7 +7,6 @@ body:
     attributes:
       value: |
         Describe the problem you're trying to solve and how Stash could help.
-        If this relates to learning Typer, mention which tutorial concept it maps to.
 
   - type: textarea
     id: problem
@@ -45,11 +44,9 @@ body:
       label: Area
       options:
         - CLI command or flag
-        - REST API
         - Import / export
         - Storage / data model
         - Documentation / examples
-        - Typer learning curriculum
         - Other
     validations:
       required: true

@@ -35,7 +35,6 @@ examples/
 └── recipes/                  # prose guides for common workflows
     daily-workflow.md
     backup-and-restore.md
-    api-workflow.md
 ```
 
 ## Run any script

@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- REST API (`api.py`), FastAPI/uvicorn/gunicorn dependencies, and `poe api` task — Stash is CLI-only
+
 ## [0.1.0] - 2025-06-14
 
-Initial release of **Stash CLI** — a personal developer reference manager and hands-on [Typer](https://typer.tiangolo.com/) learning project.
+Initial release of **Stash CLI** — a personal developer reference manager.
 
 ### Added
 
@@ -18,8 +22,6 @@ Initial release of **Stash CLI** — a personal developer reference manager and 
 - Global flags: `--verbose`, `--json`, `--config-dir`, `--version`; aliases `entry ls` and `entry rm`
 - **JSON vault storage** at `~/.config/stash/vault.json` (override via `STASH_DATA_DIR`)
 - **Pydantic** domain models and schemas (`Entry`, `EntryCreate`, `EntryUpdate`, `EntryFilter`, `SearchQuery`, `ImportPayload`)
-- **REST API** — `POST/GET/PATCH/DELETE /entries`, `GET /search`, `GET /tags`, `GET /health`, `GET /config`
-- **Typer curriculum** in `docs/learn/` with full tutorial command map
 - **Examples** — scripts, sample data, and recipes in `examples/`
 - **GitHub Actions** CI and issue templates (bug report, feature request)
 - Rich terminal output, shell autocompletion, atomic vault writes

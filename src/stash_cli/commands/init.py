@@ -2,7 +2,6 @@
 
 Typer chapters:
 - Ask with Prompt — https://typer.tiangolo.com/tutorial/prompt/
-- Password CLI Option — https://typer.tiangolo.com/tutorial/options/password/
 - CLI Arguments with Environment Variables — https://typer.tiangolo.com/tutorial/arguments/envvar/
 """
 
@@ -20,35 +19,6 @@ from stash_cli.schemas import VaultInitOptions
 from stash_cli.storage import VaultStorage
 
 
-def _confirm_api_token(value: Optional[str]) -> Optional[str]:
-    """Confirm API token entry matches (password confirmation demo).
-
-    Parameters
-    ----------
-    value : str, optional
-        Token from ``--api-token``.
-
-    Returns
-    -------
-    str, optional
-        Confirmed token.
-
-    Raises
-    ------
-    typer.BadParameter
-        If confirmation does not match.
-    """
-    if not value:
-        return value
-    confirmation = typer.prompt(
-        "Confirm API token",
-        hide_input=True,
-    )
-    if value != confirmation:
-        raise typer.BadParameter("API tokens do not match")
-    return value
-
-
 def init(
     ctx: typer.Context,
     data_dir: Optional[Path] = typer.Argument(
@@ -62,13 +32,6 @@ def init(
         "-n",
         help="Vault display name",
         prompt="Vault name",
-    ),
-    api_token: Optional[str] = typer.Option(
-        None,
-        "--api-token",
-        help="Optional API token (hidden input with confirmation)",
-        hide_input=True,
-        callback=_confirm_api_token,
     ),
     force: bool = typer.Option(
         False,
@@ -87,8 +50,6 @@ def init(
         Vault directory; reads ``STASH_DATA_DIR`` env var.
     name : str, optional
         Vault display name; prompts if omitted.
-    api_token : str, optional
-        Demo API token with confirmation (not persisted).
     force : bool
         Overwrite existing vault.
 
@@ -116,8 +77,6 @@ def init(
     try:
         options = VaultInitOptions(name=name or "default")
         vault = app_ctx.storage.initialize(options)
-        if api_token and app_ctx.verbose:
-            typer.echo("API token stored in session only (demo — not persisted).")
         message = {
             "status": "initialized",
             "name": vault.metadata.name,

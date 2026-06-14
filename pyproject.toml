@@ -5,14 +5,14 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]  # https://python-poetry.org/docs/pyproject/
 name = "stash-cli"
 version = "0.1.0"
-description = "Stash — learn Typer by building a personal developer reference manager CLI."
+description = "Stash — personal developer reference manager CLI."
 authors = ["Victor Barra <victor.barra@live.be>"]
 readme = "README.md"
 repository = "https://github.com/victorbarra/stash-cli"
 
 license = "MIT"
 
-keywords = ["python", "cli", "package", "fastapi", "typer"]
+keywords = ["python", "cli", "package", "typer"]
 classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9", 
@@ -38,12 +38,6 @@ pydantic = ">=2.0.0"
 pydantic-settings = ">=2.0.0"
 
 typer = { extras = ["all"], version = ">=0.9.0" }
-
-
-coloredlogs = ">=15.0.1"
-fastapi = { extras = ["all"], version = ">=0.92.0" }
-gunicorn = ">=20.1.0"
-uvicorn = { extras = ["standard"], version = ">=0.20.0" }
 
 
 poethepoet = ">=0.20.0"
@@ -134,50 +128,6 @@ convention = "numpy"
 
 
 [tool.poe.tasks]  # https://github.com/nat-n/poethepoet
-
-  [tool.poe.tasks.api]
-  help = "Serve a REST API"
-  shell = """
-    if [ $dev ]
-    then {
-      uvicorn \
-        --host $host \
-        --port $port \
-        --reload \
-        stash_cli.api:app
-    } else {
-      gunicorn \
-        --access-logfile - \
-        --bind $host:$port \
-        --graceful-timeout 10 \
-        --keep-alive 10 \
-        --log-file - \
-        --timeout 30 \
-        --worker-class uvicorn.workers.UvicornWorker \
-        --worker-tmp-dir /dev/shm \
-        --workers 2 \
-        stash_cli.api:app
-    } fi
-    """
-
-    [[tool.poe.tasks.api.args]]
-    help = "Bind socket to this host (default: 0.0.0.0)"
-    name = "host"
-    options = ["--host"]
-    default = "0.0.0.0"
-
-    [[tool.poe.tasks.api.args]]
-    help = "Bind socket to this port (default: 8000)"
-    name = "port"
-    options = ["--port"]
-    default = "8000"
-
-    [[tool.poe.tasks.api.args]]
-    help = "Enable development mode"
-    type = "boolean"
-    name = "dev"
-    options = ["--dev"]
-
 
   [tool.poe.tasks.docs]
   help = "Generate this package's docs"

@@ -24,7 +24,7 @@ from stash_cli.context import build_context, version_callback
 
 app = typer.Typer(
     name="stash",
-    help="Stash — personal developer reference manager. Learn Typer by building real CLIs.",
+    help="Stash — personal developer reference manager.",
     no_args_is_help=True,
 )
 
