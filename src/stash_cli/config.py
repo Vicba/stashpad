@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -71,7 +70,7 @@ class Settings(BaseSettings):
     max_entries: int = Field(default=10_000, ge=1)
 
 
-def get_settings(data_dir: Optional[Path] = None) -> Settings:
+def get_settings(data_dir: Path | None = None) -> Settings:
     """Get application settings, optionally overriding the data directory.
 
     Parameters
@@ -95,7 +94,7 @@ def get_settings(data_dir: Optional[Path] = None) -> Settings:
     return settings
 
 
-def get_config(data_dir: Optional[Path] = None) -> dict:
+def get_config(data_dir: Path | None = None) -> dict:
     """Get current configuration as a JSON-serializable dictionary.
 
     Parameters

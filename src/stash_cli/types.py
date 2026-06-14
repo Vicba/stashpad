@@ -5,15 +5,13 @@ Typer chapter: Custom Types — https://typer.tiangolo.com/tutorial/parameter-ty
 
 from __future__ import annotations
 
-from typing import Optional
-
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
 from stash_cli.schemas import EntryCreate
 
 
-def validate_url(value: Optional[str]) -> Optional[str]:
+def validate_url(value: str | None) -> str | None:
     """Validate http(s) URLs for CLI options using Pydantic.
 
     Parameters
@@ -44,9 +42,10 @@ def validate_url(value: Optional[str]) -> Optional[str]:
         validated = EntryCreate.model_validate(
             {"title": "_", "content": "_", "url": value},
         )
-        return validated.url
     except PydanticValidationError as exc:
         raise typer.BadParameter(str(exc.errors()[0]["msg"])) from exc
+    else:
+        return validated.url
 
 
 def validate_non_empty(value: str) -> str:
@@ -73,5 +72,6 @@ def validate_non_empty(value: str) -> str:
     'hello'
     """
     if not value or not value.strip():
-        raise typer.BadParameter("Value must not be empty")
+        msg = "Value must not be empty"
+        raise typer.BadParameter(msg)
     return value.strip()

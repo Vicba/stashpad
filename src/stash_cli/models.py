@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -92,8 +91,8 @@ class Entry(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     title: str = Field(min_length=1)
     content: str
-    url: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
+    url: str | None = None
+    tags: list[str] = Field(default_factory=list)
     priority: Priority = Priority.MEDIUM
     created_at: datetime = Field(default_factory=_utc_now)
     updated_at: datetime = Field(default_factory=_utc_now)
@@ -106,13 +105,13 @@ class Entry(BaseModel):
 
     @field_validator("url")
     @classmethod
-    def validate_url(cls, value: Optional[str]) -> Optional[str]:
+    def validate_url(cls, value: str | None) -> str | None:
         """Ensure URL uses http or https."""
         return validate_http_url(value)
 
     @field_validator("tags")
     @classmethod
-    def normalize_tags(cls, value: List[str]) -> List[str]:
+    def normalize_tags(cls, value: list[str]) -> list[str]:
         """Normalize tag names."""
         return normalize_tag_list(value)
 
@@ -160,5 +159,5 @@ class Vault(BaseModel):
     """
 
     metadata: VaultMetadata = Field(default_factory=VaultMetadata)
-    entries: List[Entry] = Field(default_factory=list)
-    tags: List[str] = Field(default_factory=list)
+    entries: list[Entry] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)

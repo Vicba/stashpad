@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
 from urllib.parse import urlparse
 
 
-def normalize_tag_list(tags: List[str]) -> List[str]:
+def normalize_tag_list(tags: list[str]) -> list[str]:
     """Return deduplicated lowercase tags preserving first-seen order.
 
     Parameters
@@ -25,7 +24,7 @@ def normalize_tag_list(tags: List[str]) -> List[str]:
     ['python', 'cli']
     """
     seen: set[str] = set()
-    normalized: List[str] = []
+    normalized: list[str] = []
     for tag in tags:
         clean = tag.strip().lower()
         if clean and clean not in seen:
@@ -34,7 +33,7 @@ def normalize_tag_list(tags: List[str]) -> List[str]:
     return normalized
 
 
-def validate_http_url(value: Optional[str]) -> Optional[str]:
+def validate_http_url(value: str | None) -> str | None:
     """Validate that a string is a well-formed http(s) URL.
 
     Parameters
@@ -63,5 +62,6 @@ def validate_http_url(value: Optional[str]) -> Optional[str]:
         return None
     parsed = urlparse(value)
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise ValueError(f"'{value}' is not a valid http(s) URL")
+        msg = f"'{value}' is not a valid http(s) URL"
+        raise ValueError(msg)
     return value

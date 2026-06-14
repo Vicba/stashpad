@@ -5,8 +5,6 @@ Typer chapter: CLI Option autocompletion — https://typer.tiangolo.com/tutorial
 
 from __future__ import annotations
 
-from typing import List
-
 import typer
 
 from stash_cli.config import default_data_dir
@@ -15,7 +13,7 @@ from stash_cli.models import ExportFormat
 from stash_cli.storage import VaultStorage
 
 
-def complete_tags(ctx: typer.Context, args: List[str], incomplete: str) -> List[str]:
+def complete_tags(ctx: typer.Context, args: list[str], incomplete: str) -> list[str]:
     """Suggest tags from the vault for shell completion."""
     data_dir = _resolve_data_dir(ctx)
     storage = VaultStorage(data_dir)
@@ -25,7 +23,7 @@ def complete_tags(ctx: typer.Context, args: List[str], incomplete: str) -> List[
     return [tag for tag in tags if tag.startswith(incomplete)]
 
 
-def complete_export_formats(ctx: typer.Context, args: List[str], incomplete: str) -> List[str]:
+def complete_export_formats(ctx: typer.Context, args: list[str], incomplete: str) -> list[str]:
     """Suggest export format names."""
     return [fmt.value for fmt in ExportFormat if fmt.value.startswith(incomplete)]
 

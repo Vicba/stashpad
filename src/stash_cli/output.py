@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import json
-from typing import Any, List
+from typing import TYPE_CHECKING, Any
 
 import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from stash_cli.models import Entry
+if TYPE_CHECKING:
+    from stash_cli.models import Entry
 
 console = Console()
 
@@ -34,7 +35,7 @@ def emit_json(data: Any) -> None:
     typer.echo(json.dumps(data, indent=2, default=str))
 
 
-def print_entry_table(entries: List[Entry], title: str = "Entries") -> None:
+def print_entry_table(entries: list[Entry], title: str = "Entries") -> None:
     """Render entries as a Rich table.
 
     Parameters
@@ -105,6 +106,7 @@ def entry_summary(entry: Entry) -> dict:
 
     Examples
     --------
+    >>> from stash_cli.models import Entry
     >>> entry_summary(Entry(title="T", content="C"))["title"]
     'T'
     """

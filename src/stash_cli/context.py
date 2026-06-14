@@ -9,11 +9,9 @@ Typer chapters:
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
-from pydantic import ConfigDict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from stash_cli import __version__
 from stash_cli.config import get_settings
@@ -36,6 +34,7 @@ class AppContext(BaseModel):
 
     Examples
     --------
+    >>> from pathlib import Path
     >>> ctx = AppContext(verbose=True, json_output=False, storage=VaultStorage(Path("/tmp/x")))
     >>> ctx.verbose
     True
@@ -46,7 +45,7 @@ class AppContext(BaseModel):
     verbose: bool = False
     json_output: bool = False
     storage: VaultStorage
-    tag_prefix: Optional[str] = None
+    tag_prefix: str | None = None
 
 
 def version_callback(value: bool) -> None:
@@ -68,13 +67,13 @@ def version_callback(value: bool) -> None:
     """
     if value:
         typer.echo(f"stash version {__version__}")
-        raise typer.Exit()
+        raise typer.Exit
 
 
 def build_context(
     verbose: bool = False,
     json_output: bool = False,
-    config_dir: Optional[Path] = None,
+    config_dir: Path | None = None,
 ) -> AppContext:
     """Construct ``AppContext`` from global CLI options.
 

@@ -10,15 +10,21 @@ import os
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import List, Optional
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.exceptions import EntryNotFoundError, StorageError, ValidationError, VaultNotInitializedError
+from stash_cli.exceptions import (
+    EntryNotFoundError,
+    StorageError,
+    VaultNotInitializedError,
+)
 from stash_cli.models import Entry, SortOrder, Vault, VaultMetadata
 from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate, SearchQuery, VaultInitOptions
 from stash_cli.validators import normalize_tag_list
+
+if TYPE_CHECKING:
+    from uuid import UUID
 
 
 class VaultStorage:
@@ -84,13 +90,13 @@ class VaultStorage:
         Vault
             The newly created vault.
 
-    Examples
-    --------
-    >>> from pathlib import Path
-    >>> from stash_cli.schemas import VaultInitOptions
-    >>> s = VaultStorage(Path("/tmp/stash-init-demo"))
-    >>> s.initialize(VaultInitOptions(name="work")).metadata.name
-    'work'
+        Examples
+        --------
+        >>> from pathlib import Path
+        >>> from stash_cli.schemas import VaultInitOptions
+        >>> s = VaultStorage(Path("/tmp/stash-init-demo"))
+        >>> s.initialize(VaultInitOptions(name="work")).metadata.name
+        'work'
         """
         opts = options or VaultInitOptions()
         self.ensure_data_dir()
@@ -112,8 +118,9 @@ class VaultStorage:
             If ``vault.json`` does not exist.
         """
         if not self.is_initialized:
+            msg = "Vault not initialized. Run 'stash init' first."
             raise VaultNotInitializedError(
-                "Vault not initialized. Run 'stash init' first."
+                msg
             )
         return self.load()
 
@@ -137,7 +144,8 @@ class VaultStorage:
             data = json.loads(raw)
             return Vault.model_validate(data)
         except (OSError, json.JSONDecodeError, PydanticValidationError) as exc:
-            raise StorageError(f"Failed to load vault: {exc}") from exc
+            msg = f"Failed to load vault: {exc}"
+            raise StorageError(msg) from exc
 
     def save(self, vault: Vault) -> None:
         """Atomically write vault to disk.
@@ -163,9 +171,10 @@ class VaultStorage:
             with os.fdopen(fd, "w", encoding="utf-8") as handle:
                 json.dump(payload, handle, indent=2, ensure_ascii=False)
                 handle.write("\n")
-            os.replace(tmp_path, self.vault_file)
+            Path(tmp_path).replace(self.vault_file)
         except OSError as exc:
-            raise StorageError(f"Failed to save vault: {exc}") from exc
+            msg = f"Failed to save vault: {exc}"
+            raise StorageError(msg) from exc
 
     def add_entry(self, data: EntryCreate) -> Entry:
         """Add a new entry to the vault.
@@ -180,14 +189,14 @@ class VaultStorage:
         Entry
             The persisted entry including generated id and timestamps.
 
-    Examples
-    --------
-    >>> from pathlib import Path
-    >>> from stash_cli.schemas import EntryCreate, VaultInitOptions
-    >>> s = VaultStorage(Path("/tmp/stash-add-demo"))
-    >>> _ = s.initialize(VaultInitOptions())
-    >>> s.add_entry(EntryCreate(title="T", content="C")).title
-    'T'
+        Examples
+        --------
+        >>> from pathlib import Path
+        >>> from stash_cli.schemas import EntryCreate, VaultInitOptions
+        >>> s = VaultStorage(Path("/tmp/stash-add-demo"))
+        >>> _ = s.initialize(VaultInitOptions())
+        >>> s.add_entry(EntryCreate(title="T", content="C")).title
+        'T'
         """
         vault = self.require_vault()
         entry = Entry.model_validate(data.model_dump())
@@ -218,7 +227,8 @@ class VaultStorage:
         for entry in vault.entries:
             if entry.id == entry_id:
                 return entry
-        raise EntryNotFoundError(f"Entry '{entry_id}' not found")
+        msg = f"Entry '{entry_id}' not found"
+        raise EntryNotFoundError(msg)
 
     def update_entry(self, entry_id: UUID, data: EntryUpdate) -> Entry:
         """Update fields on an existing entry.
@@ -246,7 +256,7 @@ class VaultStorage:
         self.save(vault)
         return entry
 
-    def remove_entries(self, entry_ids: List[UUID]) -> int:
+    def remove_entries(self, entry_ids: list[UUID]) -> int:
         """Remove one or more entries.
 
         Parameters
@@ -270,11 +280,12 @@ class VaultStorage:
         vault.entries = [entry for entry in vault.entries if entry.id not in id_set]
         removed = before - len(vault.entries)
         if removed == 0:
-            raise EntryNotFoundError("No matching entries found")
+            msg = "No matching entries found"
+            raise EntryNotFoundError(msg)
         self.save(vault)
         return removed
 
-    def list_entries(self, filters: EntryFilter | None = None) -> List[Entry]:
+    def list_entries(self, filters: EntryFilter | None = None) -> list[Entry]:
         """Return filtered and sorted entries.
 
         Parameters
@@ -287,14 +298,14 @@ class VaultStorage:
         list of Entry
             Matching entries.
 
-    Examples
-    --------
-    >>> from pathlib import Path
-    >>> from stash_cli.schemas import EntryFilter, VaultInitOptions
-    >>> s = VaultStorage(Path("/tmp/stash-list-demo"))
-    >>> _ = s.initialize(VaultInitOptions())
-    >>> isinstance(s.list_entries(EntryFilter(limit=5)), list)
-    True
+        Examples
+        --------
+        >>> from pathlib import Path
+        >>> from stash_cli.schemas import EntryFilter, VaultInitOptions
+        >>> s = VaultStorage(Path("/tmp/stash-list-demo"))
+        >>> _ = s.initialize(VaultInitOptions())
+        >>> isinstance(s.list_entries(EntryFilter(limit=5)), list)
+        True
         """
         filt = filters or EntryFilter()
         vault = self.require_vault()
@@ -329,7 +340,7 @@ class VaultStorage:
 
         return results
 
-    def search(self, query: SearchQuery | str, limit: Optional[int] = None) -> List[Entry]:
+    def search(self, query: SearchQuery | str, limit: int | None = None) -> list[Entry]:
         """Search entries by title, content, tags, or URL.
 
         Parameters
@@ -344,19 +355,16 @@ class VaultStorage:
         list of Entry
             Matching entries, newest first.
 
-    Examples
-    --------
-    >>> from pathlib import Path
-    >>> from stash_cli.schemas import SearchQuery, VaultInitOptions
-    >>> s = VaultStorage(Path("/tmp/stash-search-demo"))
-    >>> _ = s.initialize(VaultInitOptions())
-    >>> s.search(SearchQuery(query="missing"))
-    []
+        Examples
+        --------
+        >>> from pathlib import Path
+        >>> from stash_cli.schemas import SearchQuery, VaultInitOptions
+        >>> s = VaultStorage(Path("/tmp/stash-search-demo"))
+        >>> _ = s.initialize(VaultInitOptions())
+        >>> s.search(SearchQuery(query="missing"))
+        []
         """
-        if isinstance(query, str):
-            search = SearchQuery(query=query, limit=limit or 20)
-        else:
-            search = query
+        search = SearchQuery(query=query, limit=limit or 20) if isinstance(query, str) else query
 
         vault = self.require_vault()
         needle = search.query.lower()
@@ -373,7 +381,7 @@ class VaultStorage:
             results = results[: search.limit]
         return results
 
-    def list_tags(self, prefix: Optional[str] = None) -> List[str]:
+    def list_tags(self, prefix: str | None = None) -> list[str]:
         """Return known tags, optionally filtered by prefix.
 
         Parameters
@@ -425,7 +433,7 @@ class VaultStorage:
         vault.tags = [existing for existing in vault.tags if existing.lower() != normalized]
         self.save(vault)
 
-    def merge_tags(self, vault: Vault, tags: List[str]) -> None:
+    def merge_tags(self, vault: Vault, tags: list[str]) -> None:
         """Add tags to the vault registry if missing.
 
         Parameters
@@ -438,8 +446,8 @@ class VaultStorage:
         self._merge_tags(vault, tags)
 
     @staticmethod
-    def _merge_tags(vault: Vault, tags: List[str]) -> None:
-        """Internal helper to merge tags into vault registry."""
+    def _merge_tags(vault: Vault, tags: list[str]) -> None:
+        """Merge tags into the vault registry."""
         existing = {tag.lower() for tag in vault.tags}
         for tag in tags:
             if tag.lower() not in existing:

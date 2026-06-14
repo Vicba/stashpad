@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import List
 
 from stash_cli.models import Entry, ExportFormat, Vault
 from stash_cli.schemas import ImportPayload
@@ -47,7 +46,7 @@ def export_vault_json(vault: Vault) -> str:
     return json.dumps(vault.model_dump(mode="json"), indent=2, ensure_ascii=False)
 
 
-def export_vault_markdown(entries: List[Entry]) -> str:
+def export_vault_markdown(entries: list[Entry]) -> str:
     """Export entries as a Markdown document.
 
     Parameters
@@ -78,7 +77,7 @@ def export_vault_markdown(entries: List[Entry]) -> str:
     return "\n".join(lines)
 
 
-def export_entries(entries: List[Entry], fmt: ExportFormat) -> str:
+def export_entries(entries: list[Entry], fmt: ExportFormat) -> str:
     """Export entries in the requested format.
 
     Parameters

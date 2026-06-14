@@ -24,7 +24,8 @@ def open_entry(
     try:
         entry = app_ctx.storage.get_entry(entry_id)
         if not entry.url:
-            raise ValidationError(f"Entry '{entry_id}' has no URL")
+            msg = f"Entry '{entry_id}' has no URL"
+            raise ValidationError(msg)
         webbrowser.open(entry.url)
         if app_ctx.json_output:
             emit_json({"opened": entry.url, "id": str(entry.id)})

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -30,13 +29,13 @@ class EntryCreate(BaseModel):
     Examples
     --------
     >>> EntryCreate(title="Docker prune", content="docker system prune -af", tags=["devops"])
-    EntryCreate(title='Docker prune', content='docker system prune -af', url=None, tags=['devops'], priority=<Priority.MEDIUM: 'medium'>)
+    EntryCreate(title='Docker prune', ...)
     """
 
     title: str = Field(min_length=1, description="Entry title")
     content: str = Field(description="Entry body content")
-    url: Optional[str] = Field(default=None, description="Optional http(s) URL")
-    tags: List[str] = Field(default_factory=list, description="Tag labels")
+    url: str | None = Field(default=None, description="Optional http(s) URL")
+    tags: list[str] = Field(default_factory=list, description="Tag labels")
     priority: Priority = Field(default=Priority.MEDIUM, description="Priority level")
 
     @field_validator("title")
@@ -47,13 +46,13 @@ class EntryCreate(BaseModel):
 
     @field_validator("url")
     @classmethod
-    def check_url(cls, value: Optional[str]) -> Optional[str]:
+    def check_url(cls, value: str | None) -> str | None:
         """Ensure URL uses http or https."""
         return validate_http_url(value)
 
     @field_validator("tags")
     @classmethod
-    def check_tags(cls, value: List[str]) -> List[str]:
+    def check_tags(cls, value: list[str]) -> list[str]:
         """Normalize tag names."""
         return normalize_tag_list(value)
 
@@ -82,27 +81,27 @@ class EntryUpdate(BaseModel):
     EntryUpdate(title='Updated title', content=None, url=None, tags=None, priority=None)
     """
 
-    title: Optional[str] = Field(default=None, min_length=1)
-    content: Optional[str] = None
-    url: Optional[str] = None
-    tags: Optional[List[str]] = None
-    priority: Optional[Priority] = None
+    title: str | None = Field(default=None, min_length=1)
+    content: str | None = None
+    url: str | None = None
+    tags: list[str] | None = None
+    priority: Priority | None = None
 
     @field_validator("title")
     @classmethod
-    def strip_title(cls, value: Optional[str]) -> Optional[str]:
+    def strip_title(cls, value: str | None) -> str | None:
         """Strip whitespace from title when provided."""
         return value.strip() if value is not None else None
 
     @field_validator("url")
     @classmethod
-    def check_url(cls, value: Optional[str]) -> Optional[str]:
+    def check_url(cls, value: str | None) -> str | None:
         """Ensure URL uses http or https when provided."""
         return validate_http_url(value)
 
     @field_validator("tags")
     @classmethod
-    def check_tags(cls, value: Optional[List[str]]) -> Optional[List[str]]:
+    def check_tags(cls, value: list[str] | None) -> list[str] | None:
         """Normalize tag names when provided."""
         return normalize_tag_list(value) if value is not None else None
 
@@ -128,19 +127,19 @@ class EntryFilter(BaseModel):
     Examples
     --------
     >>> EntryFilter(tags=["python"], limit=10)
-    EntryFilter(tags=['python'], priority=None, since=None, until=None, limit=10, sort=<SortOrder.NEWEST: 'newest'>)
+    EntryFilter(tags=['python'], ...)
     """
 
-    tags: Optional[List[str]] = None
-    priority: Optional[Priority] = None
-    since: Optional[datetime] = None
-    until: Optional[datetime] = None
-    limit: Optional[int] = Field(default=None, ge=1)
+    tags: list[str] | None = None
+    priority: Priority | None = None
+    since: datetime | None = None
+    until: datetime | None = None
+    limit: int | None = Field(default=None, ge=1)
     sort: SortOrder = SortOrder.NEWEST
 
     @field_validator("tags")
     @classmethod
-    def check_tags(cls, value: Optional[List[str]]) -> Optional[List[str]]:
+    def check_tags(cls, value: list[str] | None) -> list[str] | None:
         """Normalize filter tags."""
         return normalize_tag_list(value) if value else None
 
@@ -162,7 +161,7 @@ class SearchQuery(BaseModel):
     """
 
     query: str = Field(min_length=1, description="Search text")
-    limit: Optional[int] = Field(default=20, ge=1)
+    limit: int | None = Field(default=20, ge=1)
 
 
 class VaultInitOptions(BaseModel):
@@ -195,10 +194,10 @@ class ImportPayload(BaseModel):
     Examples
     --------
     >>> ImportPayload(entries=[EntryCreate(title="T", content="C")])
-    ImportPayload(entries=[EntryCreate(title='T', content='C', url=None, tags=[], priority=<Priority.MEDIUM: 'medium'>)])
+    ImportPayload(entries=[EntryCreate(title='T', ...)])
     """
 
-    entries: List[EntryCreate]
+    entries: list[EntryCreate]
 
     @classmethod
     def from_raw(cls, data: object) -> ImportPayload:
@@ -222,16 +221,18 @@ class ImportPayload(BaseModel):
         Examples
         --------
         >>> ImportPayload.from_raw([{"title": "A", "content": "B"}])
-        ImportPayload(entries=[EntryCreate(title='A', content='B', url=None, tags=[], priority=<Priority.MEDIUM: 'medium'>)])
+        ImportPayload(entries=[EntryCreate(title='A', ...)])
         """
         if isinstance(data, dict) and "entries" in data:
             raw_entries = data["entries"]
         elif isinstance(data, list):
             raw_entries = data
         else:
-            raise ValueError("Import file must be a list of entries or a vault object")
+            msg = "Import file must be a list of entries or a vault object"
+            raise ValueError(msg)
         if not isinstance(raw_entries, list):
-            raise ValueError("Import file entries must be a list")
+            msg = "Import file entries must be a list"
+            raise TypeError(msg)
         return cls(entries=[EntryCreate.model_validate(item) for item in raw_entries])
 
 
@@ -260,4 +261,4 @@ class AppContextSchema(BaseModel):
     verbose: bool = False
     json_output: bool = False
     storage: object
-    tag_prefix: Optional[str] = None
+    tag_prefix: str | None = None

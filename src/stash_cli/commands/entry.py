@@ -9,7 +9,7 @@ Typer chapters:
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
 
 import typer
@@ -26,7 +26,7 @@ from stash_cli.types import validate_url
 entry_app = typer.Typer(help="Manage vault entries", no_args_is_help=True)
 
 
-def _parse_tags(tags: Optional[str], extra_tags: Optional[List[str]]) -> List[str]:
+def _parse_tags(tags: str | None, extra_tags: list[str] | None) -> list[str]:
     """Combine comma-separated tags and repeated ``--tag`` flags.
 
     Parameters
@@ -46,7 +46,7 @@ def _parse_tags(tags: Optional[str], extra_tags: Optional[List[str]]) -> List[st
     >>> _parse_tags("python,cli", ["docker"])
     ['python', 'cli', 'docker']
     """
-    combined: List[str] = []
+    combined: list[str] = []
     if tags:
         combined.extend(part.strip() for part in tags.split(",") if part.strip())
     if extra_tags:
@@ -54,7 +54,7 @@ def _parse_tags(tags: Optional[str], extra_tags: Optional[List[str]]) -> List[st
     return combined
 
 
-def _validate_since(value: Optional[str]) -> Optional[datetime]:
+def _validate_since(value: str | None) -> datetime | None:
     """Parse ISO date or datetime strings for ``--since`` / ``--until``.
 
     Parameters
@@ -79,8 +79,9 @@ def _validate_since(value: Optional[str]) -> Optional[datetime]:
             return datetime.fromisoformat(f"{value}T00:00:00")
         return datetime.fromisoformat(value)
     except ValueError as exc:
+        msg = f"Invalid date '{value}'. Use YYYY-MM-DD or ISO datetime."
         raise typer.BadParameter(
-            f"Invalid date '{value}'. Use YYYY-MM-DD or ISO datetime."
+            msg
         ) from exc
 
 
@@ -96,7 +97,7 @@ def add_entry(
         help="Related URL",
         callback=validate_url,
     ),
-    tag: Optional[List[str]] = typer.Option(
+    tag: Optional[list[str]] = typer.Option(
         None,
         "--tag",
         "-t",
@@ -191,7 +192,7 @@ def list_entries(
         "--tags",
         help="Filter by comma-separated tags",
     ),
-    tag: Optional[List[str]] = typer.Option(
+    tag: Optional[list[str]] = typer.Option(
         None,
         "--tag",
         "-t",
@@ -365,7 +366,7 @@ def edit_entry(
 @entry_app.command("rm", hidden=True)
 def remove_entries(
     ctx: typer.Context,
-    entry_ids: List[UUID] = typer.Argument(..., help="One or more entry UUIDs"),
+    entry_ids: list[UUID] = typer.Argument(..., help="One or more entry UUIDs"),
     force: bool = typer.Option(False, "--force", "-F", help="Skip confirmation"),
 ) -> None:
     """Remove one or more entries by UUID.
@@ -391,7 +392,7 @@ def remove_entries(
 
     if not force and not typer.confirm(f"Delete {len(entry_ids)} entry/entries?"):
         typer.echo("Cancelled.")
-        raise typer.Exit()
+        raise typer.Exit
 
     try:
         removed = app_ctx.storage.remove_entries(entry_ids)

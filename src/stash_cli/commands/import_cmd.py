@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import typer
 from pydantic import ValidationError as PydanticValidationError
@@ -73,7 +73,7 @@ def import_entries(
         typer.echo("Provide --from-file or --directory.", err=True)
         raise typer.Exit(code=1)
 
-    files: List[Path] = []
+    files: list[Path] = []
     if from_file:
         files.append(from_file)
     if directory:

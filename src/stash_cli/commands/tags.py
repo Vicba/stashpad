@@ -80,7 +80,7 @@ def remove_tag(
     app_ctx = get_ctx(ctx)
     if not force and not typer.confirm(f"Remove tag '{tag}' from registry?"):
         typer.echo("Cancelled.")
-        raise typer.Exit()
+        raise typer.Exit
     try:
         app_ctx.storage.remove_tag(tag)
         if app_ctx.json_output:
