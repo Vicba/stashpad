@@ -1,0 +1,96 @@
+name: Bug report
+description: Report something that is broken or behaves unexpectedly
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in as much as you can —
+        commands you ran and error output are especially helpful.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug
+      placeholder: e.g. `stash entry add` fails when URL is missing the scheme
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: e.g. A clear validation error, or the entry should save without a URL
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Commands to run, from a fresh shell if possible
+      placeholder: |
+        1. poetry install
+        2. stash init --name test --force
+        3. stash entry add "Title" "content" --url not-a-url
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Actual output / error message
+      description: Paste terminal output or stack trace in a fenced code block
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Stash version
+      description: Output of `stash --version` or `poetry run stash --version`
+      placeholder: "stash version 0.1.0"
+    validations:
+      required: false
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      description: Output of `python --version`
+      placeholder: "Python 3.12.10"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Where did the bug occur?
+      options:
+        - CLI
+        - REST API
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 14.6 / Ubuntu 22.04 / Windows 11"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues to avoid duplicates
+          required: true
+        - label: I can reproduce this on the latest main branch (or release)
+          required: false

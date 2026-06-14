@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "name": "team-snippets",
+    "version": "1"
+  },
+  "entries": [
+    {
+      "title": "Docker: remove unused images",
+      "content": "docker image prune -a",
+      "tags": ["docker", "devops"],
+      "priority": "medium"
+    },
+    {
+      "title": "Git: fix last commit message",
+      "content": "git commit --amend",
+      "tags": ["git"],
+      "priority": "high"
+    },
+    {
+      "title": "kubectl: get pods",
+      "content": "kubectl get pods -A",
+      "tags": ["kubernetes", "devops"],
+      "priority": "medium"
+    },
+    {
+      "title": "Poetry: add dev dependency",
+      "content": "poetry add --group dev pytest",
+      "tags": ["python", "poetry"],
+      "priority": "low"
+    }
+  ],
+  "tags": ["docker", "devops", "git", "kubernetes", "python", "poetry"]
+}

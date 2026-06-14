@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Find large files",
+    "content": "du -ah . | sort -rh | head -20",
+    "tags": ["shell", "linux"],
+    "priority": "medium"
+  },
+  {
+    "title": "Python venv",
+    "content": "python -m venv .venv && source .venv/bin/activate",
+    "tags": ["python", "setup"],
+    "priority": "high"
+  },
+  {
+    "title": "Typer docs",
+    "content": "Official Typer tutorial — learn CLI patterns",
+    "url": "https://typer.tiangolo.com/tutorial/",
+    "tags": ["python", "cli", "reference"],
+    "priority": "low"
+  }
+]
