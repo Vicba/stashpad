@@ -85,6 +85,9 @@ poetry run stash search prn --exact      # disable fuzzy matching
 # Pinned favorites
 poetry run stash pins
 poetry run stash entry list --pinned
+
+# Interactive picker (install fzf for best experience)
+poetry run stash pick --copy
 ```
 
 ## View entry details

@@ -8,7 +8,6 @@ Typer chapters:
 
 from __future__ import annotations
 
-import subprocess
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -21,8 +20,14 @@ from stash_cli.clipboard import copy_to_clipboard
 from stash_cli.completions import complete_tags
 from stash_cli.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
 from stash_cli.context import get_ctx
+from stash_cli.entry_actions import (
+    execute_entry_command,
+    get_clipboard_text,
+    get_entry_body_text,
+)
 from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.models import Entry, Priority, SortOrder
+from stash_cli.kind import normalize_new_entry
+from stash_cli.models import EntryKind, Priority, SortOrder
 from stash_cli.output import emit_json, entry_summary, print_entry_detail, render_entry_list
 from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate
 from stash_cli.types import validate_url
@@ -56,30 +61,6 @@ def _parse_tags(tags: str | None, extra_tags: list[str] | None) -> list[str]:
     if extra_tags:
         combined.extend(extra_tags)
     return combined
-
-
-def _entry_command_text(entry: Entry, first_line: bool) -> str:
-    """Return full content or only the first non-empty line.
-
-    Parameters
-    ----------
-    entry : Entry
-        Vault entry.
-    first_line : bool
-        When ``True``, return the first non-empty line only.
-
-    Returns
-    -------
-    str
-        Text to copy or execute.
-    """
-    if not first_line:
-        return entry.content
-    for line in entry.content.splitlines():
-        stripped = line.strip()
-        if stripped:
-            return stripped
-    return entry.content.strip()
 
 
 def _validate_since(value: str | None) -> datetime | None:
@@ -163,6 +144,11 @@ def add_entry(
         help="Read entry content from the system clipboard",
     ),
     pin: bool = typer.Option(False, "--pin", help="Pin entry for quick access via stash pins"),
+    kind: Optional[EntryKind] = typer.Option(
+        None,
+        "--kind",
+        help="Entry type: command, url, snippet, or note (inferred when omitted)",
+    ),
 ) -> None:
     """Add a new entry to the vault.
 
@@ -225,6 +211,12 @@ def add_entry(
             from_stdin=from_stdin,
             from_clipboard=from_clipboard,
         )
+        # Detect kind from content unless the user passed --kind explicitly.
+        content, url, resolved_kind = normalize_new_entry(
+            content=content,
+            url=url,
+            kind=kind,
+        )
         payload = EntryCreate(
             title=title,
             content=content,
@@ -232,6 +224,7 @@ def add_entry(
             tags=_parse_tags(tags, tag),
             priority=priority,
             pinned=pin,
+            kind=resolved_kind,
         )
         entry = app_ctx.storage.add_entry(payload)
         if app_ctx.json_output:
@@ -277,6 +270,7 @@ def list_entries(
     limit: int = typer.Option(DEFAULT_LIST_LIMIT, "--limit", "-l", min=1, help="Maximum entries"),
     sort: SortOrder = typer.Option(SortOrder.NEWEST, "--sort", help="Sort order"),
     pinned: bool = typer.Option(False, "--pinned", help="Show only pinned entries"),
+    kind: Optional[EntryKind] = typer.Option(None, "--kind", help="Filter by entry kind"),
 ) -> None:
     """List vault entries with optional Pydantic filters.
 
@@ -322,6 +316,7 @@ def list_entries(
             limit=limit,
             sort=sort,
             pinned=True if pinned else None,
+            kind=kind,
         )
         entries = app_ctx.storage.list_entries(filters)
         render_entry_list(
@@ -370,7 +365,7 @@ def copy_entry(
     app_ctx = get_ctx(ctx)
     try:
         entry = app_ctx.storage.touch_entry(entry_id)
-        text = _entry_command_text(entry, first_line)
+        text = get_clipboard_text(entry, first_line_only=first_line)
         copy_to_clipboard(text)
         if app_ctx.json_output:
             emit_json({"copied": text, "id": str(entry.id), "first_line": first_line})
@@ -419,28 +414,22 @@ def run_entry(
     app_ctx = get_ctx(ctx)
     try:
         entry = app_ctx.storage.touch_entry(entry_id)
-        command = _entry_command_text(entry, first_line)
-        if not command:
-            msg = f"Entry '{entry_id}' has no content to run"
-            raise ValidationError(msg)
-
-        if not force and not typer.confirm(f"Run: {command}?"):
-            typer.echo("Cancelled.")
-            raise typer.Exit
-
-        result = subprocess.run(command, shell=True, check=False)  # noqa: S602
+        exit_code = execute_entry_command(
+            entry, first_line_only=first_line, force=force
+        )
         if app_ctx.json_output:
+            command = get_entry_body_text(entry, first_line_only=first_line)
             emit_json(
                 {
                     "ran": True,
                     "command": command,
                     "id": str(entry.id),
-                    "exit_code": result.returncode,
+                    "exit_code": exit_code,
                 }
             )
-        elif result.returncode != 0:
-            typer.echo(f"Command exited with code {result.returncode}", err=True)
-        raise typer.Exit(code=result.returncode)
+        elif exit_code != 0:
+            typer.echo(f"Command exited with code {exit_code}", err=True)
+        raise typer.Exit(code=exit_code)
     except StashError as exc:
         typer.echo(exc.message, err=True)
         raise typer.Exit(code=exc.exit_code) from exc
@@ -490,6 +479,7 @@ def edit_entry(
     tags: Optional[str] = typer.Option(None, "--tags", help="Comma-separated tags"),
     priority: Optional[Priority] = typer.Option(None, "--priority", "-p"),
     pin: Optional[bool] = typer.Option(None, "--pin/--unpin", help="Pin or unpin the entry"),
+    kind: Optional[EntryKind] = typer.Option(None, "--kind", help="New entry type"),
 ) -> None:
     """Edit an existing entry using ``EntryUpdate``.
 
@@ -527,6 +517,7 @@ def edit_entry(
             tags=_parse_tags(tags, None) or None,
             priority=priority,
             pinned=pin,
+            kind=kind,
         )
         entry = app_ctx.storage.update_entry(entry_id, update)
         if app_ctx.json_output:

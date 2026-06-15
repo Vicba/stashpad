@@ -58,6 +58,21 @@ class SortOrder(str, Enum):
     TITLE = "title"
 
 
+class EntryKind(str, Enum):
+    """Entry type controlling default behavior and rendering.
+
+    Examples
+    --------
+    >>> EntryKind.COMMAND.value
+    'command'
+    """
+
+    COMMAND = "command"
+    URL = "url"
+    SNIPPET = "snippet"
+    NOTE = "note"
+
+
 class Entry(BaseModel):
     """A saved developer reference (snippet, command, URL, or note).
 
@@ -83,6 +98,8 @@ class Entry(BaseModel):
         Last time the entry was viewed, copied, run, or opened (UTC).
     pinned : bool
         When ``True``, entry appears in pinned lists and ``stash pins``.
+    kind : EntryKind
+        Entry type: command, url, snippet, or note.
 
     Examples
     --------
@@ -103,6 +120,7 @@ class Entry(BaseModel):
     updated_at: datetime = Field(default_factory=_utc_now)
     opened_at: datetime | None = None
     pinned: bool = False
+    kind: EntryKind = EntryKind.NOTE
 
     @field_validator("title")
     @classmethod

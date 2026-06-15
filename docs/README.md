@@ -23,6 +23,7 @@ stash entry add "Docker prune" "docker system prune -af" --tag devops
 stash add "Snippet" --clipboard                  # from clipboard
 git log -5 | stash add "Recent commits" -        # from stdin
 stash pins                                       # pinned favorites
+stash pick --copy                                # interactive picker
 stash entry list --tag devops
 stash search "prune"
 stash search prn                                 # fuzzy match

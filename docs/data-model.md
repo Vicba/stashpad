@@ -42,6 +42,18 @@ Each entry represents a saved command, snippet, URL, or note.
 | `updated_at` | datetime | auto | UTC last update time |
 | `opened_at` | datetime | no | UTC last view/use time (`show`, `copy`, `run`, `open`) |
 | `pinned` | boolean | no | Favorite flag for `stash pins` (default: `false`) |
+| `kind` | enum | no | `command`, `url`, `snippet`, or `note` (default: `note`; inferred on add) |
+
+### Entry kinds
+
+| Kind | Primary use | `open` | `run` | Rendering |
+|------|-------------|--------|-------|-----------|
+| `command` | Shell commands, deploy scripts | — | yes | Bash syntax highlight |
+| `url` | Bookmarks, internal URLs | yes | — | Clickable link |
+| `snippet` | Code samples | — | — | Syntax highlight with line numbers |
+| `note` | Freeform text | — | — | Plain prose |
+
+When `--kind` is omitted on `stash entry add`, kind is inferred from content and URL.
 
 Example entry:
 
@@ -56,7 +68,8 @@ Example entry:
   "created_at": "2025-06-14T10:00:00+00:00",
   "updated_at": "2025-06-14T10:00:00+00:00",
   "opened_at": null,
-  "pinned": false
+  "pinned": false,
+  "kind": "command"
 }
 ```
 

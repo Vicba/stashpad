@@ -13,6 +13,7 @@ VAULT_SCHEMA_VERSION = "1"
 DEFAULT_SEARCH_LIMIT = 20
 DEFAULT_LIST_LIMIT = 50
 DEFAULT_PINS_LIMIT = 10
+DEFAULT_PICK_LIMIT = 100
 STDIN_CONTENT_ALIAS = "-"
 
 # Search ranking: field weights (title highest, then tags, content, URL)

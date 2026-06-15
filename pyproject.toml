@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]  # https://python-poetry.org/docs/pyproject/
 name = "stashpad"
-version = "0.5.0"
+version = "0.6.0"
 description = "Stashpad — personal developer reference manager CLI."
 authors = ["Victor Barra <victor.barra@live.be>"]
 readme = "README.md"
@@ -127,8 +127,12 @@ unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 "src/stash_cli/utils.py" = ["TCH003"]
 "src/stash_cli/schemas.py" = ["TCH003"]
 "src/stash_cli/completions.py" = ["TCH002"]
+"src/stash_cli/commands/pick.py" = ["C901", "S603", "TRY003", "EM101", "EM102"]
 "src/stash_cli/clipboard.py" = ["S603", "S607"]
-"tests/**/*.py" = ["PLR2004"]
+"src/stash_cli/kind.py" = ["PLR2004"]
+"src/stash_cli/entry_actions.py" = ["FBT001", "TRY003", "EM101", "EM102"]
+"src/stash_cli/storage.py" = ["C901"]
+"tests/**/*.py" = ["PLR2004", "D103"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"

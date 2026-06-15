@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from stash_cli.constants import DEFAULT_SEARCH_LIMIT, DEFAULT_VAULT_NAME
-from stash_cli.models import Priority, SortOrder
+from stash_cli.models import EntryKind, Priority, SortOrder
 from stash_cli.validators import normalize_tag_list, validate_http_url
 
 
@@ -28,6 +28,8 @@ class EntryCreate(BaseModel):
         Entry importance; defaults to ``medium``.
     pinned : bool, optional
         Pin entry for quick access via ``stash pins``.
+    kind : EntryKind, optional
+        Entry type; inferred from content when omitted.
 
     Examples
     --------
@@ -41,6 +43,7 @@ class EntryCreate(BaseModel):
     tags: list[str] = Field(default_factory=list, description="Tag labels")
     priority: Priority = Field(default=Priority.MEDIUM, description="Priority level")
     pinned: bool = Field(default=False, description="Pin for quick access")
+    kind: EntryKind = Field(default=EntryKind.NOTE, description="Entry type")
 
     @field_validator("title")
     @classmethod
@@ -59,6 +62,17 @@ class EntryCreate(BaseModel):
     def check_tags(cls, value: list[str]) -> list[str]:
         """Normalize tag names."""
         return normalize_tag_list(value)
+
+    @model_validator(mode="after")
+    def validate_kind_constraints(self) -> EntryCreate:
+        """Ensure kind-specific fields are present."""
+        if self.kind == EntryKind.URL and not self.url:
+            msg = "URL entries require a --url or URL-only content"
+            raise ValueError(msg)
+        if self.kind == EntryKind.COMMAND and not self.content.strip():
+            msg = "Command entries require non-empty content"
+            raise ValueError(msg)
+        return self
 
 
 class EntryUpdate(BaseModel):
@@ -80,11 +94,13 @@ class EntryUpdate(BaseModel):
         New priority.
     pinned : bool, optional
         Pin or unpin the entry.
+    kind : EntryKind, optional
+        New entry type.
 
     Examples
     --------
-    >>> EntryUpdate(title="Updated title")
-    EntryUpdate(title='Updated title', content=None, url=None, tags=None, priority=None, pinned=None)
+    >>> EntryUpdate(title="Updated title").title
+    'Updated title'
     """
 
     title: str | None = Field(default=None, min_length=1)
@@ -93,6 +109,7 @@ class EntryUpdate(BaseModel):
     tags: list[str] | None = None
     priority: Priority | None = None
     pinned: bool | None = None
+    kind: EntryKind | None = None
 
     @field_validator("title")
     @classmethod
@@ -132,6 +149,8 @@ class EntryFilter(BaseModel):
         Sort order; defaults to newest first.
     pinned : bool, optional
         When ``True``, return only pinned entries.
+    kind : EntryKind, optional
+        Filter by entry type.
 
     Examples
     --------
@@ -146,6 +165,7 @@ class EntryFilter(BaseModel):
     limit: int | None = Field(default=None, ge=1)
     sort: SortOrder = SortOrder.NEWEST
     pinned: bool | None = None
+    kind: EntryKind | None = None
 
     @field_validator("tags")
     @classmethod

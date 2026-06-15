@@ -24,6 +24,7 @@ stash entry add --interactive
 
 ```bash
 stash pins                              # daily favorites first
+stash pick deploy --copy                # fzf-style picker
 stash search "npm permissions"
 stash search prn                       # fuzzy match → "Docker prune", etc.
 stash entry list --tag node

@@ -56,9 +56,11 @@ Manage vault entries. Alias group: `entry`.
 | `--priority`, `-p` | `low`, `medium`, or `high` (default: `medium`) |
 | `--interactive`, `-i` | Prompt for missing fields |
 | `--pin` | Pin entry for quick access via `stash pins` |
+| `--kind` | Entry type: `command`, `url`, `snippet`, or `note` (inferred when omitted) |
 
 ```bash
 stash entry add "Poetry install" "poetry install" --tag python --priority high
+stash entry add "Internal docs" --url https://wiki.example.com --kind url
 stash entry add "Recent commits" -
 git log --oneline -5 | stash entry add "Recent commits" -
 stash entry add "Snippet" --clipboard
@@ -77,6 +79,7 @@ stash add "Quick note" "echo hello"    # top-level alias
 | `--limit`, `-l` | Maximum results (default: 50) |
 | `--sort` | `newest`, `oldest`, or `title` (default: `newest`) |
 | `--pinned` | Show only pinned entries |
+| `--kind` | Filter by entry kind |
 
 ```bash
 stash entry list --tag devops --limit 10
@@ -109,6 +112,31 @@ stash pins
 stash pins --limit 20
 ```
 
+### `stash pick`
+
+Interactive picker — searchable list of entries. Uses **fzf** when installed; falls back to a numbered list otherwise. Default action is **copy** when no action flag is given.
+
+| Argument / option | Description |
+|-------------------|-------------|
+| `[QUERY]` | Optional initial fuzzy filter |
+| `--copy` | Copy the selected entry (commands copy first line by default) |
+| `--run` | Run the selected entry (commands only) |
+| `--open` | Open the selected entry in a browser (url entries only) |
+| `--first-line`, `-1` | Copy or run only the first non-empty line |
+| `--force`, `-F` | Skip run confirmation |
+| `--pinned` | Only pinned entries |
+| `--kind` | Filter by entry kind |
+| `--tag`, `-t` / `--tags` | Tag filters |
+| `--limit`, `-l` | Maximum candidates (default: 100) |
+| `--exact` | Disable fuzzy matching |
+
+```bash
+stash pick
+stash pick deploy --copy
+stash pick --run --pinned
+alias sp='stash pick --copy'    # shell alias
+```
+
 ### `stash entry show`
 
 | Argument | Description |
@@ -117,7 +145,7 @@ stash pins --limit 20
 
 ### `stash entry copy`
 
-Copy entry content to the system clipboard (`pbcopy` on macOS, `wl-copy` or `xclip` on Linux, `clip` on Windows).
+Copy entry content to the system clipboard. URL entries copy the URL; other kinds copy content.
 
 | Argument / option | Description |
 |-------------------|-------------|
@@ -132,7 +160,7 @@ stash --json entry copy <uuid>   # {"copied": "...", "id": "...", "first_line": 
 
 ### `stash entry run`
 
-Execute entry content in the shell. Prompts for confirmation unless `--force` is set. Propagates the subprocess exit code.
+Execute entry content in the shell. **Only `command` entries** can be run. Prompts for confirmation unless `--force` is set. Propagates the subprocess exit code.
 
 | Argument / option | Description |
 |-------------------|-------------|
@@ -156,6 +184,7 @@ stash entry run <uuid> --first-line --force
 | `--tags` | Comma-separated replacement tags |
 | `--priority`, `-p` | New priority |
 | `--pin` / `--unpin` | Pin or unpin the entry |
+| `--kind` | New entry type |
 
 ```bash
 stash entry edit <uuid> --title "Updated title" --content "new body"
@@ -270,11 +299,16 @@ See [Data model](data-model.md#import-format) for accepted JSON shapes.
 
 ## `stash open`
 
-Open an entry's URL in the default system browser.
+Open a **`url` entry** in the default system browser. Commands with a supplementary docs link must use `kind command`; only `kind url` entries can be opened.
 
 | Argument | Description |
 |----------|-------------|
-| `ENTRY_ID` | Entry UUID (must have a `url` field) |
+| `ENTRY_ID` | Entry UUID (must be `kind: url` with a `url` field) |
+
+```bash
+stash entry add "Wiki" --url https://wiki.example.com --kind url
+stash open <uuid>
+```
 
 ---
 

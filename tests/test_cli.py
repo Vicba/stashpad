@@ -219,7 +219,7 @@ def test_entry_run(runner, cli_app, vault_dir, monkeypatch) -> None:
         ran.append(command)
         return FakeResult()
 
-    monkeypatch.setattr("stash_cli.commands.entry.subprocess.run", fake_run)
+    monkeypatch.setattr("stash_cli.entry_actions.subprocess.run", fake_run)
 
     confirmed = runner.invoke(
         cli_app,
@@ -338,7 +338,7 @@ def test_entry_pin_and_pins_command(runner, cli_app, vault_dir) -> None:
 
 
 def test_entry_list_pinned_flag(runner, cli_app, vault_dir) -> None:
-    """entry list --pinned shows only pinned entries."""
+    """Entry list --pinned shows only pinned entries."""
     _init_vault(runner, cli_app, vault_dir)
     runner.invoke(
         cli_app,
@@ -354,7 +354,7 @@ def test_entry_list_pinned_flag(runner, cli_app, vault_dir) -> None:
 
 
 def test_entry_pin_unpin(runner, cli_app, vault_dir) -> None:
-    """entry pin and unpin toggle the pinned flag."""
+    """Entry pin and unpin toggle the pinned flag."""
     _init_vault(runner, cli_app, vault_dir)
     runner.invoke(
         cli_app,

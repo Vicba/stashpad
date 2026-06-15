@@ -18,6 +18,7 @@ from stash_cli.commands.export import export_app
 from stash_cli.commands.import_cmd import import_entries
 from stash_cli.commands.init import init
 from stash_cli.commands.open_cmd import open_entry
+from stash_cli.commands.pick import pick
 from stash_cli.commands.pins import list_pins
 from stash_cli.commands.search import search
 from stash_cli.commands.tags import tags_app
@@ -56,6 +57,7 @@ def main(
 app.command("init")(init)
 app.command("add")(add_entry)
 app.command("pins")(list_pins)
+app.command("pick")(pick)
 app.command("search")(search)
 app.command("import")(import_entries)
 app.command("open")(open_entry)

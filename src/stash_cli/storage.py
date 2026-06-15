@@ -357,6 +357,9 @@ class VaultStorage:
         if filt.pinned is not None:
             results = [entry for entry in results if entry.pinned is filt.pinned]
 
+        if filt.kind is not None:
+            results = [entry for entry in results if entry.kind == filt.kind]
+
         if filt.sort == SortOrder.NEWEST:
             results.sort(key=lambda entry: entry.created_at, reverse=True)
         elif filt.sort == SortOrder.OLDEST:
