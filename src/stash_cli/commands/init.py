@@ -12,6 +12,7 @@ from typing import Optional
 
 import typer
 
+from stash_cli.constants import DEFAULT_VAULT_NAME
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError
 from stash_cli.output import emit_json
@@ -75,7 +76,7 @@ def init(
         raise typer.Exit(code=1)
 
     try:
-        options = VaultInitOptions(name=name or "default")
+        options = VaultInitOptions(name=name or DEFAULT_VAULT_NAME)
         vault = app_ctx.storage.initialize(options)
         message = {
             "status": "initialized",

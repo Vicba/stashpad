@@ -19,6 +19,7 @@ stash entry add --interactive
 
 ```bash
 stash search "npm permissions"
+stash search prn                       # fuzzy match → "Docker prune", etc.
 stash entry list --tag node
 stash entry ls --tags node,setup    # comma-separated filter
 

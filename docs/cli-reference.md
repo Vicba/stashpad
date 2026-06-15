@@ -141,16 +141,25 @@ stash entry rm <uuid1> <uuid2> --force
 
 ## `stash search`
 
-Full-text search across title, content, URL, and tags.
+Fuzzy, ranked search across title, content, URL, and tags. Results are scored by
+text relevance, then boosted by priority, recency (`updated_at`), and how
+recently the entry was opened (`opened_at` is set by `entry show`, `entry copy`,
+`entry run`, and `open`).
+
+Fuzzy matching uses subsequence search — e.g. `prn` matches **Docker prune**.
+Use `--exact` to require literal substring matches only.
 
 | Argument / option | Description |
 |-------------------|-------------|
 | `QUERY` | Search string (optional if `--interactive`) |
 | `--limit`, `-l` | Maximum results (default: 20) |
 | `--interactive`, `-i` | Prompt for query |
+| `--exact` | Disable fuzzy matching |
 
 ```bash
 stash search "docker prune"
+stash search prn                    # fuzzy: matches "Docker prune"
+stash search prn --exact            # no fuzzy match
 stash search --interactive
 ```
 

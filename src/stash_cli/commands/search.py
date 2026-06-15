@@ -7,6 +7,7 @@ from typing import Optional
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
+from stash_cli.constants import DEFAULT_SEARCH_LIMIT
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError, ValidationError
 from stash_cli.output import emit_json, entry_summary, print_entry_table
@@ -16,10 +17,14 @@ from stash_cli.schemas import SearchQuery
 def search(
     ctx: typer.Context,
     query: Optional[str] = typer.Argument(None, help="Search query"),
-    limit: int = typer.Option(20, "--limit", "-l", min=1),
+    limit: int = typer.Option(DEFAULT_SEARCH_LIMIT, "--limit", "-l", min=1),
     interactive: bool = typer.Option(False, "--interactive", "-i", help="Prompt for query"),
+    exact: bool = typer.Option(False, "--exact", help="Disable fuzzy matching"),
 ) -> None:
     """Search entries by title, content, URL, or tags.
+
+    Results are ranked by relevance, then boosted by priority, recency,
+    and how recently the entry was opened.
 
     Parameters
     ----------
@@ -31,6 +36,8 @@ def search(
         Maximum number of results.
     interactive : bool
         Prompt for query when omitted.
+    exact : bool
+        Disable fuzzy subsequence matching.
 
     Returns
     -------
@@ -47,7 +54,7 @@ def search(
         query = typer.prompt("Search query")
 
     try:
-        search_query = SearchQuery(query=query, limit=limit)
+        search_query = SearchQuery(query=query, limit=limit, fuzzy=not exact)
         results = app_ctx.storage.search(search_query)
         if app_ctx.json_output:
             emit_json([entry_summary(entry) for entry in results])

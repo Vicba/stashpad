@@ -54,6 +54,28 @@ def test_search(tmp_path) -> None:
     assert len(results) == 1
 
 
+def test_fuzzy_search(tmp_path) -> None:
+    """Fuzzy search matches abbreviated queries."""
+    storage = VaultStorage(tmp_path / "vault")
+    storage.initialize()
+    storage.add_entry(EntryCreate(title="Docker prune", content="docker system prune -af"))
+    results = storage.search(SearchQuery(query="prn"))
+    assert len(results) == 1
+    assert results[0].title == "Docker prune"
+
+
+def test_touch_entry(tmp_path) -> None:
+    """Touch records opened_at on an entry."""
+    storage = VaultStorage(tmp_path / "vault")
+    storage.initialize()
+    entry = storage.add_entry(EntryCreate(title="A", content="body"))
+    assert entry.opened_at is None
+    touched = storage.touch_entry(entry.id)
+    assert touched.opened_at is not None
+    reloaded = storage.get_entry(entry.id)
+    assert reloaded.opened_at is not None
+
+
 def test_list_entries_filter_tags(tmp_path) -> None:
     """List filters by multiple tags via EntryFilter."""
     storage = VaultStorage(tmp_path / "vault")

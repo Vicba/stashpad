@@ -6,6 +6,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from stash_cli.constants import DEFAULT_SEARCH_LIMIT, DEFAULT_VAULT_NAME
 from stash_cli.models import Priority, SortOrder
 from stash_cli.validators import normalize_tag_list, validate_http_url
 
@@ -157,11 +158,12 @@ class SearchQuery(BaseModel):
     Examples
     --------
     >>> SearchQuery(query="docker")
-    SearchQuery(query='docker', limit=20)
+    SearchQuery(query='docker', limit=20, fuzzy=True)
     """
 
     query: str = Field(min_length=1, description="Search text")
-    limit: int | None = Field(default=20, ge=1)
+    limit: int | None = Field(default=DEFAULT_SEARCH_LIMIT, ge=1)
+    fuzzy: bool = Field(default=True, description="Enable fuzzy subsequence matching")
 
 
 class VaultInitOptions(BaseModel):
@@ -178,7 +180,7 @@ class VaultInitOptions(BaseModel):
     VaultInitOptions(name='work')
     """
 
-    name: str = Field(default="default", min_length=1)
+    name: str = Field(default=DEFAULT_VAULT_NAME, min_length=1)
 
 
 class ImportPayload(BaseModel):

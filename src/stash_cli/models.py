@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from stash_cli.constants import DEFAULT_VAULT_NAME, VAULT_SCHEMA_VERSION
 from stash_cli.validators import normalize_tag_list, validate_http_url
 
 
@@ -78,6 +79,8 @@ class Entry(BaseModel):
         Creation timestamp (UTC).
     updated_at : datetime
         Last modification timestamp (UTC).
+    opened_at : datetime, optional
+        Last time the entry was viewed, copied, run, or opened (UTC).
 
     Examples
     --------
@@ -96,6 +99,7 @@ class Entry(BaseModel):
     priority: Priority = Priority.MEDIUM
     created_at: datetime = Field(default_factory=_utc_now)
     updated_at: datetime = Field(default_factory=_utc_now)
+    opened_at: datetime | None = None
 
     @field_validator("title")
     @classmethod
@@ -134,9 +138,9 @@ class VaultMetadata(BaseModel):
     VaultMetadata(name='work', created_at=..., version='1')
     """
 
-    name: str = Field(default="default", min_length=1)
+    name: str = Field(default=DEFAULT_VAULT_NAME, min_length=1)
     created_at: datetime = Field(default_factory=_utc_now)
-    version: str = "1"
+    version: str = VAULT_SCHEMA_VERSION
 
 
 class Vault(BaseModel):

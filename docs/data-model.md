@@ -40,6 +40,7 @@ Each entry represents a saved command, snippet, URL, or note.
 | `priority` | enum | no | `low`, `medium`, or `high` (default: `medium`) |
 | `created_at` | datetime | auto | UTC creation time |
 | `updated_at` | datetime | auto | UTC last update time |
+| `opened_at` | datetime | no | UTC last view/use time (`show`, `copy`, `run`, `open`) |
 
 Example entry:
 
@@ -52,7 +53,8 @@ Example entry:
   "tags": ["devops", "docker"],
   "priority": "high",
   "created_at": "2025-06-14T10:00:00+00:00",
-  "updated_at": "2025-06-14T10:00:00+00:00"
+  "updated_at": "2025-06-14T10:00:00+00:00",
+  "opened_at": null
 }
 ```
 

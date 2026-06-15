@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.2.0 (2026-06-15)
 
+### Added
+
+- `stash entry copy <id>` — copy entry content to the system clipboard; `--first-line` / `-1` copies only the command line
+- `stash entry run <id>` — execute entry content in the shell with a confirmation prompt; `--force` / `-F` skips confirmation
+- Fuzzy, ranked search — subsequence matching (e.g. `prn` → "Docker prune"); results boosted by priority, recency, and last opened
+- `opened_at` field on entries — updated by `entry show`, `entry copy`, `entry run`, and `open`
+- `stash search --exact` — disable fuzzy matching
+
+### Changed
+
+- Renamed PyPI package from `stash-cli` to `stashpad` (CLI command remains `stash`)
+
+### Removed
+
+- REST API (`api.py`), FastAPI/uvicorn/gunicorn dependencies, and `poe api` task — Stash is CLI-only
+
 ## [0.1.0] - 2025-06-14
 
 Initial release of **Stash CLI** — a personal developer reference manager.

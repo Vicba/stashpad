@@ -18,6 +18,7 @@ from pydantic import ValidationError as PydanticValidationError
 
 from stash_cli.clipboard import copy_to_clipboard
 from stash_cli.completions import complete_tags
+from stash_cli.constants import DEFAULT_LIST_LIMIT
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError, ValidationError
 from stash_cli.models import Entry, Priority, SortOrder
@@ -238,7 +239,7 @@ def list_entries(
         help="Show entries created on or before this date",
         callback=_validate_since,
     ),
-    limit: int = typer.Option(50, "--limit", "-l", min=1, help="Maximum entries"),
+    limit: int = typer.Option(DEFAULT_LIST_LIMIT, "--limit", "-l", min=1, help="Maximum entries"),
     sort: SortOrder = typer.Option(SortOrder.NEWEST, "--sort", help="Sort order"),
 ) -> None:
     """List vault entries with optional Pydantic filters.
@@ -329,7 +330,7 @@ def copy_entry(
     """
     app_ctx = get_ctx(ctx)
     try:
-        entry = app_ctx.storage.get_entry(entry_id)
+        entry = app_ctx.storage.touch_entry(entry_id)
         text = _entry_command_text(entry, first_line)
         copy_to_clipboard(text)
         if app_ctx.json_output:
@@ -378,7 +379,7 @@ def run_entry(
     """
     app_ctx = get_ctx(ctx)
     try:
-        entry = app_ctx.storage.get_entry(entry_id)
+        entry = app_ctx.storage.touch_entry(entry_id)
         command = _entry_command_text(entry, first_line)
         if not command:
             msg = f"Entry '{entry_id}' has no content to run"
@@ -430,7 +431,7 @@ def show_entry(
     """
     app_ctx = get_ctx(ctx)
     try:
-        entry = app_ctx.storage.get_entry(entry_id)
+        entry = app_ctx.storage.touch_entry(entry_id)
         if app_ctx.json_output:
             emit_json(entry_summary(entry))
         else:

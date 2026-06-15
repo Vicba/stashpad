@@ -22,7 +22,7 @@ def open_entry(
     """Open the entry URL in your default browser."""
     app_ctx = get_ctx(ctx)
     try:
-        entry = app_ctx.storage.get_entry(entry_id)
+        entry = app_ctx.storage.touch_entry(entry_id)
         if not entry.url:
             msg = f"Entry '{entry_id}' has no URL"
             raise ValidationError(msg)

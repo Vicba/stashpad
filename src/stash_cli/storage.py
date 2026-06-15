@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import ValidationError as PydanticValidationError
 
+from stash_cli.constants import DEFAULT_SEARCH_LIMIT, VAULT_FILENAME
 from stash_cli.exceptions import (
     EntryNotFoundError,
     StorageError,
@@ -21,6 +22,7 @@ from stash_cli.exceptions import (
 )
 from stash_cli.models import Entry, SortOrder, Vault, VaultMetadata
 from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate, SearchQuery, VaultInitOptions
+from stash_cli.search_rank import rank_search_results
 from stash_cli.validators import normalize_tag_list
 
 if TYPE_CHECKING:
@@ -44,8 +46,6 @@ class VaultStorage:
     'demo'
     """
 
-    VAULT_FILENAME = "vault.json"
-
     def __init__(self, data_dir: Path) -> None:
         """Initialize storage for a given data directory.
 
@@ -55,7 +55,7 @@ class VaultStorage:
             Root directory for vault files.
         """
         self.data_dir = Path(data_dir)
-        self.vault_file = self.data_dir / self.VAULT_FILENAME
+        self.vault_file = self.data_dir / VAULT_FILENAME
 
     @property
     def is_initialized(self) -> bool:
@@ -230,6 +230,28 @@ class VaultStorage:
         msg = f"Entry '{entry_id}' not found"
         raise EntryNotFoundError(msg)
 
+    def touch_entry(self, entry_id: UUID) -> Entry:
+        """Record that an entry was viewed or used.
+
+        Parameters
+        ----------
+        entry_id : UUID
+            Entry identifier.
+
+        Returns
+        -------
+        Entry
+            Entry with ``opened_at`` set to now (UTC).
+        """
+        vault = self.require_vault()
+        for entry in vault.entries:
+            if entry.id == entry_id:
+                entry.opened_at = datetime.now(timezone.utc)
+                self.save(vault)
+                return entry
+        msg = f"Entry '{entry_id}' not found"
+        raise EntryNotFoundError(msg)
+
     def update_entry(self, entry_id: UUID, data: EntryUpdate) -> Entry:
         """Update fields on an existing entry.
 
@@ -364,22 +386,15 @@ class VaultStorage:
         >>> s.search(SearchQuery(query="missing"))
         []
         """
-        search = SearchQuery(query=query, limit=limit or 20) if isinstance(query, str) else query
+        search = SearchQuery(query=query, limit=limit or DEFAULT_SEARCH_LIMIT) if isinstance(query, str) else query
 
         vault = self.require_vault()
-        needle = search.query.lower()
-        results = [
-            entry
-            for entry in vault.entries
-            if needle in entry.title.lower()
-            or needle in entry.content.lower()
-            or needle in (entry.url or "").lower()
-            or any(needle in tag.lower() for tag in entry.tags)
-        ]
-        results.sort(key=lambda entry: entry.created_at, reverse=True)
-        if search.limit is not None:
-            results = results[: search.limit]
-        return results
+        return rank_search_results(
+            vault.entries,
+            search.query,
+            limit=search.limit,
+            fuzzy=search.fuzzy,
+        )
 
     def list_tags(self, prefix: str | None = None) -> list[str]:
         """Return known tags, optionally filtered by prefix.
