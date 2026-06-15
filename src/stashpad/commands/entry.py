@@ -15,22 +15,22 @@ from uuid import UUID
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.capture import resolve_entry_content
-from stash_cli.clipboard import copy_to_clipboard
-from stash_cli.completions import complete_tags
-from stash_cli.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
-from stash_cli.context import get_ctx
-from stash_cli.entry_actions import (
+from stashpad.capture import resolve_entry_content
+from stashpad.clipboard import copy_to_clipboard
+from stashpad.completions import complete_tags
+from stashpad.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
+from stashpad.context import get_ctx
+from stashpad.entry_actions import (
     execute_entry_command,
     get_clipboard_text,
     get_entry_body_text,
 )
-from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.kind import normalize_new_entry
-from stash_cli.models import EntryKind, Priority, SortOrder
-from stash_cli.output import emit_json, entry_summary, print_entry_detail, render_entry_list
-from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate
-from stash_cli.types import validate_url
+from stashpad.exceptions import StashError, ValidationError
+from stashpad.kind import normalize_new_entry
+from stashpad.models import EntryKind, Priority, SortOrder
+from stashpad.output import emit_json, entry_summary, print_entry_detail, render_entry_list
+from stashpad.schemas import EntryCreate, EntryFilter, EntryUpdate
+from stashpad.types import validate_url
 
 entry_app = typer.Typer(help="Manage vault entries", no_args_is_help=True)
 

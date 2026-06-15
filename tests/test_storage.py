@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from stash_cli.exceptions import EntryNotFoundError, VaultNotInitializedError
-from stash_cli.models import Priority
-from stash_cli.schemas import EntryCreate, EntryFilter, SearchQuery
-from stash_cli.storage import VaultStorage
+from stashpad.exceptions import EntryNotFoundError, VaultNotInitializedError
+from stashpad.models import Priority
+from stashpad.schemas import EntryCreate, EntryFilter, SearchQuery
+from stashpad.storage import VaultStorage
 
 
 def test_initialize_and_add_entry(tmp_path) -> None:

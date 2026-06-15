@@ -11,7 +11,7 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.table import Table
 
-from stash_cli.models import Entry, EntryKind
+from stashpad.models import Entry, EntryKind
 
 console = Console()
 
@@ -191,7 +191,7 @@ def entry_summary(entry: Entry) -> dict[str, Any]:
 
     Examples
     --------
-    >>> from stash_cli.models import Entry
+    >>> from stashpad.models import Entry
     >>> entry_summary(Entry(title="T", content="C"))["title"]
     'T'
     """

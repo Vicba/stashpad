@@ -14,9 +14,9 @@ from typing import cast
 import typer
 from pydantic import BaseModel, ConfigDict
 
-from stash_cli import __version__
-from stash_cli.config import get_settings
-from stash_cli.storage import VaultStorage
+from stashpad import __version__
+from stashpad.config import get_settings
+from stashpad.storage import VaultStorage
 
 
 class AppContext(BaseModel):

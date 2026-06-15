@@ -6,10 +6,10 @@ from uuid import UUID
 
 import typer
 
-from stash_cli.context import get_ctx
-from stash_cli.entry_actions import open_entry_in_browser
-from stash_cli.exceptions import StashError
-from stash_cli.output import emit_json
+from stashpad.context import get_ctx
+from stashpad.entry_actions import open_entry_in_browser
+from stashpad.exceptions import StashError
+from stashpad.output import emit_json
 
 
 def open_entry(

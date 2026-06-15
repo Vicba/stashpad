@@ -10,10 +10,10 @@ from typing import cast
 
 import typer
 
-from stash_cli.config import default_data_dir
-from stash_cli.context import AppContext
-from stash_cli.models import ExportFormat
-from stash_cli.storage import VaultStorage
+from stashpad.config import default_data_dir
+from stashpad.context import AppContext
+from stashpad.models import ExportFormat
+from stashpad.storage import VaultStorage
 
 
 def complete_tags(ctx: typer.Context, args: list[str], incomplete: str) -> list[str]:

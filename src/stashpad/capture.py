@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import sys
 
-from stash_cli.clipboard import read_from_clipboard
-from stash_cli.constants import STDIN_CONTENT_ALIAS
-from stash_cli.exceptions import ValidationError
+from stashpad.clipboard import read_from_clipboard
+from stashpad.constants import STDIN_CONTENT_ALIAS
+from stashpad.exceptions import ValidationError
 
 
 def read_from_stdin() -> str:

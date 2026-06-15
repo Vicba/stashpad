@@ -13,11 +13,11 @@ from pathlib import Path
 import typer
 from rich.progress import BarColumn, Progress, TextColumn
 
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError
-from stash_cli.models import ExportFormat
-from stash_cli.output import emit_json
-from stash_cli.utils import export_entries
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError
+from stashpad.models import ExportFormat
+from stashpad.output import emit_json
+from stashpad.utils import export_entries
 
 export_app = typer.Typer(help="Export vault data", no_args_is_help=True)
 

@@ -6,7 +6,7 @@ Stashpad is CLI-only (Python 3.8–3.12, Typer + Pydantic). There is no server o
 
 - **PyPI package:** `stashpad`
 - **CLI command:** `stash`
-- **Python module:** `stash_cli`
+- **Python module:** `stashpad`
 - **Default vault:** `~/.config/stash/vault.json` (override with `STASH_DATA_DIR`, `--config-dir`, or `stash init [data_dir]`)
 - **Scripting:** pass `--json` before subcommands for machine-readable output
 - **Repository:** https://github.com/Vicba/stash-cli

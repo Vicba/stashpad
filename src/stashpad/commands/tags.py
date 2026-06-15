@@ -11,9 +11,9 @@ from typing import Optional
 
 import typer
 
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError
-from stash_cli.output import emit_json
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError
+from stashpad.output import emit_json
 
 tags_app = typer.Typer(help="Manage tags", no_args_is_help=True)
 

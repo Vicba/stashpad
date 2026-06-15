@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from stash_cli.commands.pick import prompt_user_to_pick_entry
-from stash_cli.models import Entry, EntryKind
+from stashpad.commands.pick import prompt_user_to_pick_entry
+from stashpad.models import Entry, EntryKind
 
 
 def _init_vault(runner, cli_app, vault_dir) -> None:
@@ -32,8 +32,8 @@ def test_pick_copy_with_injected_picker(runner, cli_app, vault_dir, monkeypatch)
     def fake_picker(entries, query):
         return next(entry for entry in entries if str(entry.id) == entry_id)
 
-    monkeypatch.setattr("stash_cli.commands.pick.prompt_user_to_pick_entry", fake_picker)
-    monkeypatch.setattr("stash_cli.commands.pick.copy_to_clipboard", lambda text: None)
+    monkeypatch.setattr("stashpad.commands.pick.prompt_user_to_pick_entry", fake_picker)
+    monkeypatch.setattr("stashpad.commands.pick.copy_to_clipboard", lambda text: None)
 
     result = runner.invoke(
         cli_app,

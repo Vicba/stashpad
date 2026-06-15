@@ -6,9 +6,9 @@ import io
 
 import pytest
 
-from stash_cli.capture import read_from_stdin, resolve_entry_content
-from stash_cli.constants import STDIN_CONTENT_ALIAS
-from stash_cli.exceptions import ValidationError
+from stashpad.capture import read_from_stdin, resolve_entry_content
+from stashpad.constants import STDIN_CONTENT_ALIAS
+from stashpad.exceptions import ValidationError
 
 
 def test_resolve_entry_content_uses_positional_value() -> None:
@@ -30,7 +30,7 @@ def test_resolve_entry_content_rejects_both_capture_flags() -> None:
 
 def test_resolve_entry_content_from_clipboard(monkeypatch) -> None:
     """Clipboard capture bypasses the positional content argument."""
-    monkeypatch.setattr("stash_cli.capture.read_from_clipboard", lambda: "from clipboard")
+    monkeypatch.setattr("stashpad.capture.read_from_clipboard", lambda: "from clipboard")
     assert resolve_entry_content(None, from_clipboard=True) == "from clipboard"
 
 

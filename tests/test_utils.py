@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from stash_cli.models import Entry, ExportFormat, Vault
-from stash_cli.utils import export_entries, export_vault_json, parse_import_file
+from stashpad.models import Entry, ExportFormat, Vault
+from stashpad.utils import export_entries, export_vault_json, parse_import_file
 
 
 def test_export_json_and_markdown() -> None:

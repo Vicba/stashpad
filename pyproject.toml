@@ -12,7 +12,7 @@ repository = "https://github.com/Vicba/stash-cli"
 
 license = "MIT"
 
-packages = [{ include = "stash_cli", from = "src" }]
+packages = [{ include = "stashpad", from = "src" }]
 
 keywords = ["python", "cli", "package", "typer"]
 classifiers = [
@@ -31,7 +31,7 @@ version_provider = "poetry"
 
 
 [tool.poetry.scripts]  # https://python-poetry.org/docs/pyproject/#scripts
-stash = "stash_cli.cli:app"
+stash = "stashpad.cli:app"
 
 
 [tool.poetry.dependencies]  # https://python-poetry.org/docs/dependency-specification/
@@ -102,7 +102,7 @@ warn_required_dynamic_aliases = true
 warn_untyped_fields = true
 
 [tool.pytest.ini_options]  # https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
-addopts = "--color=yes --doctest-modules --exitfirst --failed-first --strict-config --strict-markers --typeguard-packages=stash_cli --verbosity=2 --junitxml=reports/pytest.xml"
+addopts = "--color=yes --doctest-modules --exitfirst --failed-first --strict-config --strict-markers --typeguard-packages=stashpad --verbosity=2 --junitxml=reports/pytest.xml"
 filterwarnings = ["error", "ignore::DeprecationWarning"]
 testpaths = ["src", "tests"]
 xfail_strict = true
@@ -120,18 +120,18 @@ ignore = ["D203", "D213", "E501", "RET504", "S101", "S307"]
 unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 
 [tool.ruff.lint.per-file-ignores]
-"src/stash_cli/commands/**/*.py" = ["B008", "FBT001", "FBT002", "FBT003", "PLR0913", "PLR2004", "UP007", "TCH003"]
-"src/stash_cli/commands/import_cmd.py" = ["C901"]
-"src/stash_cli/cli.py" = ["B008", "FBT001", "FBT003", "UP007", "TCH003"]
-"src/stash_cli/context.py" = ["FBT001", "FBT002", "TCH003"]
-"src/stash_cli/utils.py" = ["TCH003"]
-"src/stash_cli/schemas.py" = ["TCH003"]
-"src/stash_cli/completions.py" = ["TCH002"]
-"src/stash_cli/commands/pick.py" = ["C901", "S603", "TRY003", "EM101", "EM102"]
-"src/stash_cli/clipboard.py" = ["S603", "S607"]
-"src/stash_cli/kind.py" = ["PLR2004"]
-"src/stash_cli/entry_actions.py" = ["FBT001", "TRY003", "EM101", "EM102"]
-"src/stash_cli/storage.py" = ["C901"]
+"src/stashpad/commands/**/*.py" = ["B008", "FBT001", "FBT002", "FBT003", "PLR0913", "PLR2004", "UP007", "TCH003"]
+"src/stashpad/commands/import_cmd.py" = ["C901"]
+"src/stashpad/cli.py" = ["B008", "FBT001", "FBT003", "UP007", "TCH003"]
+"src/stashpad/context.py" = ["FBT001", "FBT002", "TCH003"]
+"src/stashpad/utils.py" = ["TCH003"]
+"src/stashpad/schemas.py" = ["TCH003"]
+"src/stashpad/completions.py" = ["TCH002"]
+"src/stashpad/commands/pick.py" = ["C901", "S603", "TRY003", "EM101", "EM102"]
+"src/stashpad/clipboard.py" = ["S603", "S607"]
+"src/stashpad/kind.py" = ["PLR2004"]
+"src/stashpad/entry_actions.py" = ["FBT001", "TRY003", "EM101", "EM102"]
+"src/stashpad/storage.py" = ["C901"]
 "tests/**/*.py" = ["PLR2004", "D103"]
 
 [tool.ruff.lint.flake8-tidy-imports]
@@ -152,7 +152,7 @@ convention = "numpy"
     pdoc
       --docformat $docformat
       --output-directory $outputdirectory
-      stash_cli
+      stashpad
     """
 
     [[tool.poe.tasks.docs.args]]
@@ -195,4 +195,4 @@ convention = "numpy"
 
   [tool.poe.tasks.dev]
   help = "Run CLI via typer dev runner (https://typer.tiangolo.com/tutorial/typer-command/)"
-  cmd = "typer stash_cli.cli run"
+  cmd = "typer stashpad.cli run"

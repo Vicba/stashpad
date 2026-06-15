@@ -6,8 +6,8 @@ import subprocess
 
 import pytest
 
-from stash_cli.clipboard import copy_to_clipboard, read_from_clipboard
-from stash_cli.exceptions import StashError
+from stashpad.clipboard import copy_to_clipboard, read_from_clipboard
+from stashpad.exceptions import StashError
 
 
 def test_copy_to_clipboard_darwin(monkeypatch) -> None:
@@ -18,8 +18,8 @@ def test_copy_to_clipboard_darwin(monkeypatch) -> None:
         captured["command"] = command
         captured["input"] = kwargs.get("input")
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", fake_run)
 
     copy_to_clipboard("hello")
     assert captured["command"] == ["pbcopy"]
@@ -36,8 +36,8 @@ def test_read_from_clipboard_darwin(monkeypatch) -> None:
         assert command == ["pbpaste"]
         return FakeResult()
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", fake_run)
 
     assert read_from_clipboard() == "clipboard text"
 
@@ -48,8 +48,8 @@ def test_read_from_clipboard_empty(monkeypatch) -> None:
     class FakeResult:
         stdout = "   "
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Darwin")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", lambda *args, **kwargs: FakeResult())
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", lambda *args, **kwargs: FakeResult())
 
     with pytest.raises(StashError, match="Clipboard is empty"):
         read_from_clipboard()
@@ -65,8 +65,8 @@ def test_copy_to_clipboard_linux_prefers_wl_copy(monkeypatch) -> None:
             return
         raise subprocess.CalledProcessError(1, command)
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Linux")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Linux")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", fake_run)
 
     copy_to_clipboard("hello")
     assert calls == [["wl-copy"]]
@@ -83,8 +83,8 @@ def test_copy_to_clipboard_linux_falls_back_to_xclip(monkeypatch) -> None:
         missing = "missing"
         raise OSError(missing)
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Linux")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Linux")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", fake_run)
 
     copy_to_clipboard("hello")
     assert calls == [["wl-copy"], ["xclip", "-selection", "clipboard"]]
@@ -97,8 +97,8 @@ def test_copy_to_clipboard_linux_missing_tools(monkeypatch) -> None:
         missing = "missing"
         raise OSError(missing)
 
-    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Linux")
-    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.clipboard.platform.system", lambda: "Linux")
+    monkeypatch.setattr("stashpad.clipboard.subprocess.run", fake_run)
 
     with pytest.raises(StashError, match="No clipboard tool found"):
         copy_to_clipboard("hello")

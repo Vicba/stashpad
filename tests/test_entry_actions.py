@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from stash_cli.entry_actions import (
+from stashpad.entry_actions import (
     execute_entry_command,
     get_clipboard_text,
     open_entry_in_browser,
     resolve_entry_kind,
 )
-from stash_cli.exceptions import ValidationError
-from stash_cli.models import Entry, EntryKind
+from stashpad.exceptions import ValidationError
+from stashpad.models import Entry, EntryKind
 
 
 def test_legacy_command_resolved_at_use_time() -> None:

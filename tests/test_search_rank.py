@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from stash_cli.models import Entry, Priority
-from stash_cli.search_rank import (
+from stashpad.models import Entry, Priority
+from stashpad.search_rank import (
     parse_query_tokens,
     rank_search_results,
     subsequence_match_score,

@@ -8,8 +8,8 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from stash_cli.constants import DEFAULT_VAULT_NAME, VAULT_SCHEMA_VERSION
-from stash_cli.validators import normalize_tag_list, validate_http_url
+from stashpad.constants import DEFAULT_VAULT_NAME, VAULT_SCHEMA_VERSION
+from stashpad.validators import normalize_tag_list, validate_http_url
 
 
 def _utc_now() -> datetime:

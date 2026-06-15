@@ -7,11 +7,11 @@ from typing import Optional
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.constants import DEFAULT_SEARCH_LIMIT
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.output import emit_json, entry_summary, print_entry_table
-from stash_cli.schemas import SearchQuery
+from stashpad.constants import DEFAULT_SEARCH_LIMIT
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError, ValidationError
+from stashpad.output import emit_json, entry_summary, print_entry_table
+from stashpad.schemas import SearchQuery
 
 
 def search(

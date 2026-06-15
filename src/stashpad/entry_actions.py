@@ -15,9 +15,9 @@ import webbrowser
 
 import typer
 
-from stash_cli.exceptions import ValidationError
-from stash_cli.kind import detect_entry_kind
-from stash_cli.models import Entry, EntryKind
+from stashpad.exceptions import ValidationError
+from stashpad.kind import detect_entry_kind
+from stashpad.models import Entry, EntryKind
 
 
 def resolve_entry_kind(entry: Entry) -> EntryKind:

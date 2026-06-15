@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import re
 
-from stash_cli.models import EntryKind
-from stash_cli.validators import validate_http_url
+from stashpad.models import EntryKind
+from stashpad.validators import validate_http_url
 
 # Shell commands stash recognizes when auto-detecting ``kind: command``.
 _SHELL_COMMAND_PREFIXES = (

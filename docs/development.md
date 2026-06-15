@@ -22,13 +22,13 @@ Run the CLI without a global install:
 
 ```bash
 poetry run stash --help
-poetry run typer stash_cli.cli run --help   # equivalent to poe dev
+poetry run typer stashpad.cli run --help   # equivalent to poe dev
 ```
 
 ## Project structure
 
 ```
-src/stash_cli/
+src/stashpad/
   cli.py              # Root Typer app and global callback
   context.py          # Shared AppContext (storage, flags)
   config.py           # Settings and XDG data directory

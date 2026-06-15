@@ -173,7 +173,7 @@ def test_entry_copy(runner, cli_app, vault_dir, monkeypatch) -> None:
     def fake_copy(text: str) -> None:
         copied.append(text)
 
-    monkeypatch.setattr("stash_cli.commands.entry.copy_to_clipboard", fake_copy)
+    monkeypatch.setattr("stashpad.commands.entry.copy_to_clipboard", fake_copy)
 
     result = runner.invoke(
         cli_app,
@@ -195,7 +195,7 @@ def test_entry_copy(runner, cli_app, vault_dir, monkeypatch) -> None:
 def test_entry_copy_json(runner, cli_app, vault_dir, monkeypatch) -> None:
     """Copy with --json returns the copied text."""
     entry_id = _init_and_add_entry(runner, cli_app, vault_dir)
-    monkeypatch.setattr("stash_cli.commands.entry.copy_to_clipboard", lambda text: None)
+    monkeypatch.setattr("stashpad.commands.entry.copy_to_clipboard", lambda text: None)
 
     result = runner.invoke(
         cli_app,
@@ -219,7 +219,7 @@ def test_entry_run(runner, cli_app, vault_dir, monkeypatch) -> None:
         ran.append(command)
         return FakeResult()
 
-    monkeypatch.setattr("stash_cli.entry_actions.subprocess.run", fake_run)
+    monkeypatch.setattr("stashpad.entry_actions.subprocess.run", fake_run)
 
     confirmed = runner.invoke(
         cli_app,
@@ -307,7 +307,7 @@ def test_add_from_clipboard(runner, cli_app, vault_dir, monkeypatch) -> None:
     """--clipboard stores clipboard text as entry content."""
     _init_vault(runner, cli_app, vault_dir)
     monkeypatch.setattr(
-        "stash_cli.capture.read_from_clipboard",
+        "stashpad.capture.read_from_clipboard",
         lambda: "clipboard snippet",
     )
 

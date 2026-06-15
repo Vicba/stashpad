@@ -130,7 +130,7 @@ poetry run poe dev       # dev runner
 ## Project structure
 
 ```
-src/stash_cli/
+src/stashpad/
   cli.py              # root app + global callback
   context.py          # shared AppContext
   models.py           # Entry, Vault, enums

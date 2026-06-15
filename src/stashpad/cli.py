@@ -12,17 +12,17 @@ from typing import Optional
 
 import typer
 
-from stash_cli.commands.config_cmd import config_app
-from stash_cli.commands.entry import add_entry, entry_app
-from stash_cli.commands.export import export_app
-from stash_cli.commands.import_cmd import import_entries
-from stash_cli.commands.init import init
-from stash_cli.commands.open_cmd import open_entry
-from stash_cli.commands.pick import pick
-from stash_cli.commands.pins import list_pins
-from stash_cli.commands.search import search
-from stash_cli.commands.tags import tags_app
-from stash_cli.context import build_context, version_callback
+from stashpad.commands.config_cmd import config_app
+from stashpad.commands.entry import add_entry, entry_app
+from stashpad.commands.export import export_app
+from stashpad.commands.import_cmd import import_entries
+from stashpad.commands.init import init
+from stashpad.commands.open_cmd import open_entry
+from stashpad.commands.pick import pick
+from stashpad.commands.pins import list_pins
+from stashpad.commands.search import search
+from stashpad.commands.tags import tags_app
+from stashpad.context import build_context, version_callback
 
 app = typer.Typer(
     name="stash",

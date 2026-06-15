@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from stash_cli.kind import detect_entry_kind, normalize_new_entry
-from stash_cli.models import EntryKind
+from stashpad.kind import detect_entry_kind, normalize_new_entry
+from stashpad.models import EntryKind
 
 
 def test_detect_url_from_url_field() -> None:

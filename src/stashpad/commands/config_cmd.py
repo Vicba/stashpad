@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import typer
 
-from stash_cli.config import get_config
-from stash_cli.context import get_ctx
-from stash_cli.output import emit_json
+from stashpad.config import get_config
+from stashpad.context import get_ctx
+from stashpad.output import emit_json
 
 config_app = typer.Typer(help="View and manage configuration", no_args_is_help=True)
 

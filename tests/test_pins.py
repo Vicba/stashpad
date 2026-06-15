@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from stash_cli.models import SortOrder
-from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate
-from stash_cli.storage import VaultStorage
+from stashpad.models import SortOrder
+from stashpad.schemas import EntryCreate, EntryFilter, EntryUpdate
+from stashpad.storage import VaultStorage
 
 
 def test_pin_and_list_pinned(tmp_path) -> None:

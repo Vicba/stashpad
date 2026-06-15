@@ -6,9 +6,9 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from stash_cli.constants import DEFAULT_SEARCH_LIMIT, DEFAULT_VAULT_NAME
-from stash_cli.models import EntryKind, Priority, SortOrder
-from stash_cli.validators import normalize_tag_list, validate_http_url
+from stashpad.constants import DEFAULT_SEARCH_LIMIT, DEFAULT_VAULT_NAME
+from stashpad.models import EntryKind, Priority, SortOrder
+from stashpad.validators import normalize_tag_list, validate_http_url
 
 
 class EntryCreate(BaseModel):

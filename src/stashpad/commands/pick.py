@@ -17,23 +17,23 @@ from typing import TYPE_CHECKING, Literal, Optional
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.clipboard import copy_to_clipboard
-from stash_cli.completions import complete_tags
-from stash_cli.constants import DEFAULT_PICK_LIMIT
-from stash_cli.context import get_ctx
-from stash_cli.entry_actions import (
+from stashpad.clipboard import copy_to_clipboard
+from stashpad.completions import complete_tags
+from stashpad.constants import DEFAULT_PICK_LIMIT
+from stashpad.context import get_ctx
+from stashpad.entry_actions import (
     execute_entry_command,
     get_clipboard_text,
     open_entry_in_browser,
 )
-from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.models import Entry, EntryKind
-from stash_cli.output import emit_json, entry_summary
-from stash_cli.schemas import EntryFilter
-from stash_cli.search_rank import rank_search_results
+from stashpad.exceptions import StashError, ValidationError
+from stashpad.models import Entry, EntryKind
+from stashpad.output import emit_json, entry_summary
+from stashpad.schemas import EntryFilter
+from stashpad.search_rank import rank_search_results
 
 if TYPE_CHECKING:
-    from stash_cli.storage import VaultStorage
+    from stashpad.storage import VaultStorage
 
 EntryPickerFn = Callable[[list[Entry], str], Entry | None]
 PickAction = Literal["copy", "run", "open"]

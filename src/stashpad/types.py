@@ -8,7 +8,7 @@ from __future__ import annotations
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.schemas import EntryCreate
+from stashpad.schemas import EntryCreate
 
 
 def validate_url(value: str | None) -> str | None:

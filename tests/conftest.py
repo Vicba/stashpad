@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from typer.testing import CliRunner
 
-from stash_cli.cli import app
+from stashpad.cli import app
 
 
 @pytest.fixture()

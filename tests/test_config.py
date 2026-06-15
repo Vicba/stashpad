@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from stash_cli.config import get_config, get_settings
+from stashpad.config import get_config, get_settings
 
 
 def test_get_settings() -> None:

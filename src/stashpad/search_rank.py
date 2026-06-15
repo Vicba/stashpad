@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from stash_cli.constants import (
+from stashpad.constants import (
     BOOST_HALF_LIFE_DAYS,
     CONTENT_MATCH_WEIGHT,
     DEFAULT_SEARCH_LIMIT,
@@ -21,7 +21,7 @@ from stash_cli.constants import (
     WORD_TIGHTNESS_BASE,
     WORD_TIGHTNESS_RANGE,
 )
-from stash_cli.models import Entry, Priority
+from stashpad.models import Entry, Priority
 
 
 def rank_search_results(
@@ -51,7 +51,7 @@ def rank_search_results(
 
     Examples
     --------
-    >>> from stash_cli.models import Entry
+    >>> from stashpad.models import Entry
     >>> docker = Entry(title="Docker prune", content="docker system prune -af")
     >>> rank_search_results([docker], "prn")[0].title
     'Docker prune'

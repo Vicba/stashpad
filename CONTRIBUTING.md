@@ -89,7 +89,7 @@ Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `perf`.
 - **Formatting and linting:** [Ruff](https://docs.astral.sh/ruff/) (`line-length = 100`, NumPy docstring convention)
 - **Types:** strict [mypy](https://mypy.readthedocs.io/) on `src/`
 - **Imports:** no relative imports in application code
-- **CLI commands:** one module per command group under `src/stash_cli/commands/`
+- **CLI commands:** one module per command group under `src/stashpad/commands/`
 - **Validation:** Pydantic schemas in `schemas.py` / `models.py` for user input
 
 Match existing patterns in the file you are editing. Prefer small, focused changes over large refactors unless discussed first.
@@ -111,7 +111,7 @@ CI runs on every pull request to `main`:
 ## Project structure (quick reference)
 
 ```
-src/stash_cli/
+src/stashpad/
   cli.py              # root Typer app
   context.py          # shared AppContext
   storage.py          # JSON vault persistence

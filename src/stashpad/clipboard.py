@@ -5,7 +5,7 @@ from __future__ import annotations
 import platform
 import subprocess
 
-from stash_cli.exceptions import StashError
+from stashpad.exceptions import StashError
 
 
 def copy_to_clipboard(text: str) -> None:

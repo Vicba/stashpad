@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from stash_cli.models import Entry, ExportFormat, Vault
-from stash_cli.schemas import ImportPayload
+from stashpad.models import Entry, ExportFormat, Vault
+from stashpad.schemas import ImportPayload
 
 
 def entry_to_dict(entry: Entry) -> dict[str, Any]:

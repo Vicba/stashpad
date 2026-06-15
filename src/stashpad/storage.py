@@ -14,16 +14,16 @@ from typing import TYPE_CHECKING
 
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.constants import DEFAULT_SEARCH_LIMIT, VAULT_FILENAME
-from stash_cli.exceptions import (
+from stashpad.constants import DEFAULT_SEARCH_LIMIT, VAULT_FILENAME
+from stashpad.exceptions import (
     EntryNotFoundError,
     StorageError,
     VaultNotInitializedError,
 )
-from stash_cli.models import Entry, SortOrder, Vault, VaultMetadata
-from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate, SearchQuery, VaultInitOptions
-from stash_cli.search_rank import rank_search_results
-from stash_cli.validators import normalize_tag_list
+from stashpad.models import Entry, SortOrder, Vault, VaultMetadata
+from stashpad.schemas import EntryCreate, EntryFilter, EntryUpdate, SearchQuery, VaultInitOptions
+from stashpad.search_rank import rank_search_results
+from stashpad.validators import normalize_tag_list
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -40,7 +40,7 @@ class VaultStorage:
     Examples
     --------
     >>> from pathlib import Path
-    >>> from stash_cli.schemas import VaultInitOptions
+    >>> from stashpad.schemas import VaultInitOptions
     >>> s = VaultStorage(Path("/tmp/stash-demo"))
     >>> s.initialize(VaultInitOptions(name="demo")).metadata.name
     'demo'
@@ -93,7 +93,7 @@ class VaultStorage:
         Examples
         --------
         >>> from pathlib import Path
-        >>> from stash_cli.schemas import VaultInitOptions
+        >>> from stashpad.schemas import VaultInitOptions
         >>> s = VaultStorage(Path("/tmp/stash-init-demo"))
         >>> s.initialize(VaultInitOptions(name="work")).metadata.name
         'work'
@@ -190,7 +190,7 @@ class VaultStorage:
         Examples
         --------
         >>> from pathlib import Path
-        >>> from stash_cli.schemas import EntryCreate, VaultInitOptions
+        >>> from stashpad.schemas import EntryCreate, VaultInitOptions
         >>> s = VaultStorage(Path("/tmp/stash-add-demo"))
         >>> _ = s.initialize(VaultInitOptions())
         >>> s.add_entry(EntryCreate(title="T", content="C")).title
@@ -325,7 +325,7 @@ class VaultStorage:
         Examples
         --------
         >>> from pathlib import Path
-        >>> from stash_cli.schemas import EntryFilter, VaultInitOptions
+        >>> from stashpad.schemas import EntryFilter, VaultInitOptions
         >>> s = VaultStorage(Path("/tmp/stash-list-demo"))
         >>> _ = s.initialize(VaultInitOptions())
         >>> isinstance(s.list_entries(EntryFilter(limit=5)), list)
@@ -386,7 +386,7 @@ class VaultStorage:
         Examples
         --------
         >>> from pathlib import Path
-        >>> from stash_cli.schemas import SearchQuery, VaultInitOptions
+        >>> from stashpad.schemas import SearchQuery, VaultInitOptions
         >>> s = VaultStorage(Path("/tmp/stash-search-demo"))
         >>> _ = s.initialize(VaultInitOptions())
         >>> s.search(SearchQuery(query="missing"))

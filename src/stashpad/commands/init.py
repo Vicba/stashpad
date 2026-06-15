@@ -12,12 +12,12 @@ from typing import Optional
 
 import typer
 
-from stash_cli.constants import DEFAULT_VAULT_NAME
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError
-from stash_cli.output import emit_json
-from stash_cli.schemas import VaultInitOptions
-from stash_cli.storage import VaultStorage
+from stashpad.constants import DEFAULT_VAULT_NAME
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError
+from stashpad.output import emit_json
+from stashpad.schemas import VaultInitOptions
+from stashpad.storage import VaultStorage
 
 
 def init(

@@ -5,12 +5,12 @@ from __future__ import annotations
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
-from stash_cli.constants import DEFAULT_PINS_LIMIT
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.models import SortOrder
-from stash_cli.output import render_entry_list
-from stash_cli.schemas import EntryFilter
+from stashpad.constants import DEFAULT_PINS_LIMIT
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError, ValidationError
+from stashpad.models import SortOrder
+from stashpad.output import render_entry_list
+from stashpad.schemas import EntryFilter
 
 
 def list_pins(

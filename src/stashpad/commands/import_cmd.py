@@ -15,11 +15,11 @@ import typer
 from pydantic import ValidationError as PydanticValidationError
 from rich.progress import BarColumn, Progress, TextColumn
 
-from stash_cli.context import get_ctx
-from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.models import Entry
-from stash_cli.output import emit_json
-from stash_cli.utils import parse_import_file
+from stashpad.context import get_ctx
+from stashpad.exceptions import StashError, ValidationError
+from stashpad.models import Entry
+from stashpad.output import emit_json
+from stashpad.utils import parse_import_file
 
 
 def import_entries(
