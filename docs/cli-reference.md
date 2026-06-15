@@ -81,6 +81,36 @@ stash entry ls --tags python,cli --sort title
 |----------|-------------|
 | `ENTRY_ID` | Entry UUID |
 
+### `stash entry copy`
+
+Copy entry content to the system clipboard (`pbcopy` on macOS, `wl-copy` or `xclip` on Linux, `clip` on Windows).
+
+| Argument / option | Description |
+|-------------------|-------------|
+| `ENTRY_ID` | Entry UUID |
+| `--first-line`, `-1` | Copy only the first non-empty line (the command) |
+
+```bash
+stash entry copy <uuid>
+stash entry copy <uuid> --first-line
+stash --json entry copy <uuid>   # {"copied": "...", "id": "...", "first_line": false}
+```
+
+### `stash entry run`
+
+Execute entry content in the shell. Prompts for confirmation unless `--force` is set. Propagates the subprocess exit code.
+
+| Argument / option | Description |
+|-------------------|-------------|
+| `ENTRY_ID` | Entry UUID |
+| `--first-line`, `-1` | Run only the first non-empty line (the command) |
+| `--force`, `-F` | Skip confirmation |
+
+```bash
+stash entry run <uuid>
+stash entry run <uuid> --first-line --force
+```
+
 ### `stash entry edit`
 
 | Argument / option | Description |

@@ -127,6 +127,7 @@ unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 "src/stash_cli/utils.py" = ["TCH003"]
 "src/stash_cli/schemas.py" = ["TCH003"]
 "src/stash_cli/completions.py" = ["TCH002"]
+"src/stash_cli/clipboard.py" = ["S603", "S607"]
 "tests/**/*.py" = ["PLR2004"]
 
 [tool.ruff.lint.flake8-tidy-imports]

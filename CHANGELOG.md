@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `stash entry copy <id>` — copy entry content to the system clipboard; `--first-line` / `-1` copies only the command line
+- `stash entry run <id>` — execute entry content in the shell with a confirmation prompt; `--force` / `-F` skips confirmation
+
 ### Changed
 
 - Renamed PyPI package from `stash-cli` to `stashpad` (CLI command remains `stash`)

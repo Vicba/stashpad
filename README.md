@@ -32,6 +32,8 @@ stash init --name my-vault                         # create vault once
 stash entry add "Docker prune" "docker ..." --tag devops
 stash entry list --tag devops                    # filter by tag
 stash search "prune"                             # full-text search
+stash entry copy <id> --first-line               # copy command to clipboard
+stash entry run <id>                             # run with confirmation
 stash export json ./backup.json                  # backup
 stash import --from-file ./backup.json           # restore
 ```
@@ -90,7 +92,7 @@ poetry run stash init --name my-vault
 | Command | Description |
 |---------|-------------|
 | `stash init` | Initialize vault (prompts, env vars) |
-| `stash entry add/list/show/edit/remove` | CRUD with UUID, enums, filters, aliases (`ls`, `rm`) |
+| `stash entry add/list/show/edit/remove/copy/run` | CRUD with UUID, enums, filters, aliases (`ls`, `rm`) |
 | `stash search` | Full-text search |
 | `stash tags list/add/remove` | Nested subcommands |
 | `stash export json/markdown` | Export with Path types and progress bars |

@@ -137,3 +137,110 @@ def test_vault_not_initialized(runner, cli_app, vault_dir) -> None:
     )
     assert result.exit_code == 2
     assert "not initialized" in result.stdout.lower()
+
+
+def _init_and_add_entry(runner, cli_app, vault_dir) -> str:
+    """Initialize vault, add one entry, and return its ID."""
+    runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "init", "--name", "test", "--force"],
+    )
+    runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Echo test",
+            "echo hello\n# note below",
+            "--tag",
+            "shell",
+        ],
+    )
+    json_list = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "--json", "entry", "list"],
+    )
+    return json.loads(json_list.stdout)[0]["id"]
+
+
+def test_entry_copy(runner, cli_app, vault_dir, monkeypatch) -> None:
+    """Copy puts entry content on the clipboard."""
+    entry_id = _init_and_add_entry(runner, cli_app, vault_dir)
+    copied: list[str] = []
+
+    def fake_copy(text: str) -> None:
+        copied.append(text)
+
+    monkeypatch.setattr("stash_cli.commands.entry.copy_to_clipboard", fake_copy)
+
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "copy", entry_id],
+    )
+    assert result.exit_code == 0
+    assert copied == ["echo hello\n# note below"]
+    assert "Copied content" in result.stdout
+
+    first_line = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "copy", entry_id, "--first-line"],
+    )
+    assert first_line.exit_code == 0
+    assert copied[-1] == "echo hello"
+    assert "Copied first line" in first_line.stdout
+
+
+def test_entry_copy_json(runner, cli_app, vault_dir, monkeypatch) -> None:
+    """Copy with --json returns the copied text."""
+    entry_id = _init_and_add_entry(runner, cli_app, vault_dir)
+    monkeypatch.setattr("stash_cli.commands.entry.copy_to_clipboard", lambda text: None)
+
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "--json", "entry", "copy", entry_id, "--first-line"],
+    )
+    assert result.exit_code == 0
+    data = json.loads(result.stdout)
+    assert data["copied"] == "echo hello"
+    assert data["first_line"] is True
+
+
+def test_entry_run(runner, cli_app, vault_dir, monkeypatch) -> None:
+    """Run executes entry content after confirmation."""
+    entry_id = _init_and_add_entry(runner, cli_app, vault_dir)
+    ran: list[str] = []
+
+    class FakeResult:
+        returncode = 0
+
+    def fake_run(command: str, /, **kwargs: object) -> FakeResult:
+        ran.append(command)
+        return FakeResult()
+
+    monkeypatch.setattr("stash_cli.commands.entry.subprocess.run", fake_run)
+
+    confirmed = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "run", entry_id],
+        input="y\n",
+    )
+    assert confirmed.exit_code == 0
+    assert ran == ["echo hello\n# note below"]
+
+    cancelled = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "run", entry_id],
+        input="n\n",
+    )
+    assert cancelled.exit_code == 0
+    assert "Cancelled" in cancelled.stdout
+    assert len(ran) == 1
+
+    forced = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "run", entry_id, "--first-line", "--force"],
+    )
+    assert forced.exit_code == 0
+    assert ran[-1] == "echo hello"

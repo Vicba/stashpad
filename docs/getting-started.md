@@ -81,6 +81,14 @@ List output shows entry UUIDs. Show full details with:
 poetry run stash entry show <entry-uuid>
 ```
 
+Copy content to the clipboard or run a saved command:
+
+```bash
+poetry run stash entry copy <entry-uuid>              # full content
+poetry run stash entry copy <entry-uuid> --first-line # command line only
+poetry run stash entry run <entry-uuid>               # execute with confirmation
+```
+
 Open a saved URL in your browser:
 
 ```bash

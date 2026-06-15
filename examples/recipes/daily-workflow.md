@@ -21,6 +21,10 @@ stash entry add --interactive
 stash search "npm permissions"
 stash entry list --tag node
 stash entry ls --tags node,setup    # comma-separated filter
+
+# Copy ID from search/list output, then copy or run in one step:
+stash entry copy <entry-uuid> --first-line   # paste into terminal
+stash entry run <entry-uuid>                 # execute with confirmation
 ```
 
 ## End of day: quick review

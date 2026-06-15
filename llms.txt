@@ -19,6 +19,8 @@ stash init --name my-vault
 stash entry add "Docker prune" "docker system prune -af" --tag devops
 stash entry list --tag devops
 stash search "prune"
+stash entry copy <id> --first-line   # copy command to clipboard
+stash entry run <id>                 # run with confirmation
 stash export json ./backup.json
 stash import --from-file ./backup.json
 ```

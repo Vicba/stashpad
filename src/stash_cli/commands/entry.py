@@ -8,6 +8,7 @@ Typer chapters:
 
 from __future__ import annotations
 
+import subprocess
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -15,10 +16,11 @@ from uuid import UUID
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
+from stash_cli.clipboard import copy_to_clipboard
 from stash_cli.completions import complete_tags
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError, ValidationError
-from stash_cli.models import Priority, SortOrder
+from stash_cli.models import Entry, Priority, SortOrder
 from stash_cli.output import emit_json, entry_summary, print_entry_detail, print_entry_table
 from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate
 from stash_cli.types import validate_url
@@ -52,6 +54,30 @@ def _parse_tags(tags: str | None, extra_tags: list[str] | None) -> list[str]:
     if extra_tags:
         combined.extend(extra_tags)
     return combined
+
+
+def _entry_command_text(entry: Entry, first_line: bool) -> str:
+    """Return full content or only the first non-empty line.
+
+    Parameters
+    ----------
+    entry : Entry
+        Vault entry.
+    first_line : bool
+        When ``True``, return the first non-empty line only.
+
+    Returns
+    -------
+    str
+        Text to copy or execute.
+    """
+    if not first_line:
+        return entry.content
+    for line in entry.content.splitlines():
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return entry.content.strip()
 
 
 def _validate_since(value: str | None) -> datetime | None:
@@ -268,6 +294,116 @@ def list_entries(
         typer.echo(message, err=True)
         code = exc.exit_code if isinstance(exc, StashError) else ValidationError.exit_code
         raise typer.Exit(code=code) from exc
+
+
+@entry_app.command("copy")
+def copy_entry(
+    ctx: typer.Context,
+    entry_id: UUID = typer.Argument(..., help="Entry UUID"),
+    first_line: bool = typer.Option(
+        False,
+        "--first-line",
+        "-1",
+        help="Copy only the first non-empty line (the command)",
+    ),
+) -> None:
+    """Copy entry content to the system clipboard.
+
+    Parameters
+    ----------
+    ctx : typer.Context
+        Typer context.
+    entry_id : UUID
+        Entry identifier.
+    first_line : bool
+        Copy only the first line when ``True``.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    $ stash entry copy <id>
+    $ stash entry copy <id> --first-line
+    """
+    app_ctx = get_ctx(ctx)
+    try:
+        entry = app_ctx.storage.get_entry(entry_id)
+        text = _entry_command_text(entry, first_line)
+        copy_to_clipboard(text)
+        if app_ctx.json_output:
+            emit_json({"copied": text, "id": str(entry.id), "first_line": first_line})
+        else:
+            scope = "first line" if first_line else "content"
+            typer.echo(f"Copied {scope} from '{entry.title}' to clipboard")
+    except StashError as exc:
+        typer.echo(exc.message, err=True)
+        raise typer.Exit(code=exc.exit_code) from exc
+
+
+@entry_app.command("run")
+def run_entry(
+    ctx: typer.Context,
+    entry_id: UUID = typer.Argument(..., help="Entry UUID"),
+    first_line: bool = typer.Option(
+        False,
+        "--first-line",
+        "-1",
+        help="Run only the first non-empty line (the command)",
+    ),
+    force: bool = typer.Option(False, "--force", "-F", help="Skip confirmation"),
+) -> None:
+    """Execute entry content in the shell after confirmation.
+
+    Parameters
+    ----------
+    ctx : typer.Context
+        Typer context.
+    entry_id : UUID
+        Entry identifier.
+    first_line : bool
+        Run only the first line when ``True``.
+    force : bool
+        Skip confirmation prompt.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    $ stash entry run <id>
+    $ stash entry run <id> --first-line --force
+    """
+    app_ctx = get_ctx(ctx)
+    try:
+        entry = app_ctx.storage.get_entry(entry_id)
+        command = _entry_command_text(entry, first_line)
+        if not command:
+            msg = f"Entry '{entry_id}' has no content to run"
+            raise ValidationError(msg)
+
+        if not force and not typer.confirm(f"Run: {command}?"):
+            typer.echo("Cancelled.")
+            raise typer.Exit
+
+        result = subprocess.run(command, shell=True, check=False)  # noqa: S602
+        if app_ctx.json_output:
+            emit_json(
+                {
+                    "ran": True,
+                    "command": command,
+                    "id": str(entry.id),
+                    "exit_code": result.returncode,
+                }
+            )
+        elif result.returncode != 0:
+            typer.echo(f"Command exited with code {result.returncode}", err=True)
+        raise typer.Exit(code=result.returncode)
+    except StashError as exc:
+        typer.echo(exc.message, err=True)
+        raise typer.Exit(code=exc.exit_code) from exc
 
 
 @entry_app.command("show")
