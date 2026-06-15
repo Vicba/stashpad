@@ -23,6 +23,7 @@ stash entry add --interactive
 ## During work: search before googling again
 
 ```bash
+stash pins                              # daily favorites first
 stash search "npm permissions"
 stash search prn                       # fuzzy match → "Docker prune", etc.
 stash entry list --tag node

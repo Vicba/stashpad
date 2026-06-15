@@ -317,3 +317,71 @@ def test_add_from_clipboard(runner, cli_app, vault_dir, monkeypatch) -> None:
     )
     assert result.exit_code == 0
     assert "Added entry 'Snippet'" in result.stdout
+
+
+def test_entry_pin_and_pins_command(runner, cli_app, vault_dir) -> None:
+    """Pin an entry and list it via stash pins."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "add", "Deploy", "kubectl apply -f", "--pin"],
+    )
+    runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "add", "Other", "echo hi"],
+    )
+
+    pins = runner.invoke(cli_app, ["--config-dir", str(vault_dir), "pins"])
+    assert pins.exit_code == 0
+    assert "Deploy" in pins.stdout
+    assert "Other" not in pins.stdout
+
+
+def test_entry_list_pinned_flag(runner, cli_app, vault_dir) -> None:
+    """entry list --pinned shows only pinned entries."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "add", "Daily cmd", "make deploy", "--pin"],
+    )
+
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "list", "--pinned"],
+    )
+    assert result.exit_code == 0
+    assert "Daily cmd" in result.stdout
+
+
+def test_entry_pin_unpin(runner, cli_app, vault_dir) -> None:
+    """entry pin and unpin toggle the pinned flag."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "add", "Toggle me", "cmd"],
+    )
+    entry_id = json.loads(
+        runner.invoke(
+            cli_app,
+            ["--config-dir", str(vault_dir), "--json", "entry", "list"],
+        ).stdout,
+    )[0]["id"]
+
+    pin = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "pin", entry_id],
+    )
+    assert pin.exit_code == 0
+    assert "Pinned" in pin.stdout
+
+    pins = runner.invoke(cli_app, ["--config-dir", str(vault_dir), "pins"])
+    assert "Toggle me" in pins.stdout
+
+    unpin = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "unpin", entry_id],
+    )
+    assert unpin.exit_code == 0
+
+    pins_after = runner.invoke(cli_app, ["--config-dir", str(vault_dir), "pins"])
+    assert "Toggle me" not in pins_after.stdout

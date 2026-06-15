@@ -20,7 +20,7 @@ Everything lives in a single JSON file:
 
 Override with `STASH_DATA_DIR`, `--config-dir`, or a path passed to `stash init`. The file contains:
 
-- **Entries** — title, content, optional URL, tags, priority, timestamps, UUID
+- **Entries** — title, content, optional URL, tags, priority, pinned flag, timestamps, UUID
 - **Tags** — a registry of tag names used in the vault
 
 Example scripts use `examples/.demo-vault/` so they never touch your real vault.
@@ -30,8 +30,10 @@ Example scripts use `examples/.demo-vault/` so they never touch your real vault.
 ```bash
 stash init --name my-vault                         # create vault once
 stash entry add "Docker prune" "docker ..." --tag devops
-stash entry list --tag devops                    # filter by tag
-stash search "prune"                             # full-text search
+stash add "Quick note" "echo hello"              # top-level alias
+git log -5 | stash add "Recent commits" -      # pipe into vault
+stash pins                                       # daily favorites (pinned)
+stash search "prune"                             # fuzzy ranked search
 stash entry copy <id> --first-line               # copy command to clipboard
 stash entry run <id>                             # run with confirmation
 stash export json ./backup.json                  # backup
@@ -92,8 +94,10 @@ poetry run stash init --name my-vault
 | Command | Description |
 |---------|-------------|
 | `stash init` | Initialize vault (prompts, env vars) |
-| `stash entry add/list/show/edit/remove/copy/run` | CRUD with UUID, enums, filters, aliases (`ls`, `rm`) |
-| `stash search` | Full-text search |
+| `stash add` | Quick-capture alias for `stash entry add` (stdin, clipboard) |
+| `stash entry add/list/show/edit/remove/copy/run/pin/unpin` | CRUD with UUID, enums, filters, aliases (`ls`, `rm`) |
+| `stash pins` | List pinned favorites |
+| `stash search` | Fuzzy ranked search (`--exact` to disable) |
 | `stash tags list/add/remove` | Nested subcommands |
 | `stash export json/markdown` | Export with Path types and progress bars |
 | `stash import` | Import from JSON files |

@@ -55,6 +55,7 @@ Manage vault entries. Alias group: `entry`.
 | `--tags` | Comma-separated tags (`work,python,docker`) |
 | `--priority`, `-p` | `low`, `medium`, or `high` (default: `medium`) |
 | `--interactive`, `-i` | Prompt for missing fields |
+| `--pin` | Pin entry for quick access via `stash pins` |
 
 ```bash
 stash entry add "Poetry install" "poetry install" --tag python --priority high
@@ -75,10 +76,37 @@ stash add "Quick note" "echo hello"    # top-level alias
 | `--until` | Entries created on or before date |
 | `--limit`, `-l` | Maximum results (default: 50) |
 | `--sort` | `newest`, `oldest`, or `title` (default: `newest`) |
+| `--pinned` | Show only pinned entries |
 
 ```bash
 stash entry list --tag devops --limit 10
+stash entry list --pinned
 stash entry ls --tags python,cli --sort title
+```
+
+### `stash entry pin` / `stash entry unpin`
+
+| Argument | Description |
+|----------|-------------|
+| `ENTRY_ID` | Entry UUID |
+
+```bash
+stash entry pin <uuid>
+stash entry unpin <uuid>
+```
+
+### `stash pins`
+
+List pinned favorites — daily go-to commands, deploy scripts, and URLs. Default limit is 10, sorted by title.
+
+| Option | Description |
+|--------|-------------|
+| `--limit`, `-l` | Maximum results (default: 10) |
+| `--sort` | `newest`, `oldest`, or `title` (default: `title`) |
+
+```bash
+stash pins
+stash pins --limit 20
 ```
 
 ### `stash entry show`
@@ -127,6 +155,7 @@ stash entry run <uuid> --first-line --force
 | `--url`, `-u` | New URL |
 | `--tags` | Comma-separated replacement tags |
 | `--priority`, `-p` | New priority |
+| `--pin` / `--unpin` | Pin or unpin the entry |
 
 ```bash
 stash entry edit <uuid> --title "Updated title" --content "new body"

@@ -26,6 +26,8 @@ class EntryCreate(BaseModel):
         Labels for filtering; normalized to lowercase.
     priority : Priority, optional
         Entry importance; defaults to ``medium``.
+    pinned : bool, optional
+        Pin entry for quick access via ``stash pins``.
 
     Examples
     --------
@@ -38,6 +40,7 @@ class EntryCreate(BaseModel):
     url: str | None = Field(default=None, description="Optional http(s) URL")
     tags: list[str] = Field(default_factory=list, description="Tag labels")
     priority: Priority = Field(default=Priority.MEDIUM, description="Priority level")
+    pinned: bool = Field(default=False, description="Pin for quick access")
 
     @field_validator("title")
     @classmethod
@@ -75,11 +78,13 @@ class EntryUpdate(BaseModel):
         Replacement tag list.
     priority : Priority, optional
         New priority.
+    pinned : bool, optional
+        Pin or unpin the entry.
 
     Examples
     --------
     >>> EntryUpdate(title="Updated title")
-    EntryUpdate(title='Updated title', content=None, url=None, tags=None, priority=None)
+    EntryUpdate(title='Updated title', content=None, url=None, tags=None, priority=None, pinned=None)
     """
 
     title: str | None = Field(default=None, min_length=1)
@@ -87,6 +92,7 @@ class EntryUpdate(BaseModel):
     url: str | None = None
     tags: list[str] | None = None
     priority: Priority | None = None
+    pinned: bool | None = None
 
     @field_validator("title")
     @classmethod
@@ -124,6 +130,8 @@ class EntryFilter(BaseModel):
         Maximum number of results (>= 1).
     sort : SortOrder, optional
         Sort order; defaults to newest first.
+    pinned : bool, optional
+        When ``True``, return only pinned entries.
 
     Examples
     --------
@@ -137,6 +145,7 @@ class EntryFilter(BaseModel):
     until: datetime | None = None
     limit: int | None = Field(default=None, ge=1)
     sort: SortOrder = SortOrder.NEWEST
+    pinned: bool | None = None
 
     @field_validator("tags")
     @classmethod

@@ -81,6 +81,8 @@ class Entry(BaseModel):
         Last modification timestamp (UTC).
     opened_at : datetime, optional
         Last time the entry was viewed, copied, run, or opened (UTC).
+    pinned : bool
+        When ``True``, entry appears in pinned lists and ``stash pins``.
 
     Examples
     --------
@@ -100,6 +102,7 @@ class Entry(BaseModel):
     created_at: datetime = Field(default_factory=_utc_now)
     updated_at: datetime = Field(default_factory=_utc_now)
     opened_at: datetime | None = None
+    pinned: bool = False
 
     @field_validator("title")
     @classmethod

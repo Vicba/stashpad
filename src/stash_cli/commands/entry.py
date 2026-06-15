@@ -23,7 +23,7 @@ from stash_cli.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError, ValidationError
 from stash_cli.models import Entry, Priority, SortOrder
-from stash_cli.output import emit_json, entry_summary, print_entry_detail, print_entry_table
+from stash_cli.output import emit_json, entry_summary, print_entry_detail, render_entry_list
 from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate
 from stash_cli.types import validate_url
 
@@ -162,6 +162,7 @@ def add_entry(
         "--clipboard",
         help="Read entry content from the system clipboard",
     ),
+    pin: bool = typer.Option(False, "--pin", help="Pin entry for quick access via stash pins"),
 ) -> None:
     """Add a new entry to the vault.
 
@@ -191,6 +192,8 @@ def add_entry(
         Read body from stdin instead of the positional content.
     from_clipboard : bool
         Read body from the system clipboard.
+    pin : bool
+        Pin the entry for ``stash pins``.
 
     Returns
     -------
@@ -228,6 +231,7 @@ def add_entry(
             url=url,
             tags=_parse_tags(tags, tag),
             priority=priority,
+            pinned=pin,
         )
         entry = app_ctx.storage.add_entry(payload)
         if app_ctx.json_output:
@@ -272,6 +276,7 @@ def list_entries(
     ),
     limit: int = typer.Option(DEFAULT_LIST_LIMIT, "--limit", "-l", min=1, help="Maximum entries"),
     sort: SortOrder = typer.Option(SortOrder.NEWEST, "--sort", help="Sort order"),
+    pinned: bool = typer.Option(False, "--pinned", help="Show only pinned entries"),
 ) -> None:
     """List vault entries with optional Pydantic filters.
 
@@ -293,6 +298,8 @@ def list_entries(
         Max results.
     sort : SortOrder
         Sort order enum.
+    pinned : bool
+        Show only pinned entries when ``True``.
 
     Returns
     -------
@@ -301,6 +308,7 @@ def list_entries(
     Examples
     --------
     $ stash entry list --tag devops --limit 10
+    $ stash entry list --pinned
     $ stash entry ls --tags python,cli
     """
     app_ctx = get_ctx(ctx)
@@ -313,14 +321,14 @@ def list_entries(
             until=until,
             limit=limit,
             sort=sort,
+            pinned=True if pinned else None,
         )
         entries = app_ctx.storage.list_entries(filters)
-        if app_ctx.json_output:
-            emit_json([entry_summary(entry) for entry in entries])
-        elif not entries:
-            typer.echo("No entries found.")
-        else:
-            print_entry_table(entries)
+        render_entry_list(
+            entries,
+            json_output=app_ctx.json_output,
+            title="Pinned" if pinned else "Entries",
+        )
     except (StashError, PydanticValidationError) as exc:
         message = exc.message if isinstance(exc, StashError) else str(exc)
         typer.echo(message, err=True)
@@ -481,6 +489,7 @@ def edit_entry(
     url: Optional[str] = typer.Option(None, "--url", "-u", callback=validate_url),
     tags: Optional[str] = typer.Option(None, "--tags", help="Comma-separated tags"),
     priority: Optional[Priority] = typer.Option(None, "--priority", "-p"),
+    pin: Optional[bool] = typer.Option(None, "--pin/--unpin", help="Pin or unpin the entry"),
 ) -> None:
     """Edit an existing entry using ``EntryUpdate``.
 
@@ -517,12 +526,85 @@ def edit_entry(
             url=url,
             tags=_parse_tags(tags, None) or None,
             priority=priority,
+            pinned=pin,
         )
         entry = app_ctx.storage.update_entry(entry_id, update)
         if app_ctx.json_output:
             emit_json(entry_summary(entry))
         else:
             typer.echo(f"Updated entry '{entry.title}'")
+    except (StashError, PydanticValidationError) as exc:
+        message = exc.message if isinstance(exc, StashError) else str(exc)
+        typer.echo(message, err=True)
+        code = exc.exit_code if isinstance(exc, StashError) else ValidationError.exit_code
+        raise typer.Exit(code=code) from exc
+
+
+@entry_app.command("pin")
+def pin_entry(
+    ctx: typer.Context,
+    entry_id: UUID = typer.Argument(..., help="Entry UUID"),
+) -> None:
+    """Pin an entry for quick access via ``stash pins``.
+
+    Parameters
+    ----------
+    ctx : typer.Context
+        Typer context.
+    entry_id : UUID
+        Entry to pin.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    $ stash entry pin <id>
+    """
+    app_ctx = get_ctx(ctx)
+    try:
+        entry = app_ctx.storage.update_entry(entry_id, EntryUpdate(pinned=True))
+        if app_ctx.json_output:
+            emit_json(entry_summary(entry))
+        else:
+            typer.echo(f"Pinned '{entry.title}'")
+    except (StashError, PydanticValidationError) as exc:
+        message = exc.message if isinstance(exc, StashError) else str(exc)
+        typer.echo(message, err=True)
+        code = exc.exit_code if isinstance(exc, StashError) else ValidationError.exit_code
+        raise typer.Exit(code=code) from exc
+
+
+@entry_app.command("unpin")
+def unpin_entry(
+    ctx: typer.Context,
+    entry_id: UUID = typer.Argument(..., help="Entry UUID"),
+) -> None:
+    """Remove an entry from pinned favorites.
+
+    Parameters
+    ----------
+    ctx : typer.Context
+        Typer context.
+    entry_id : UUID
+        Entry to unpin.
+
+    Returns
+    -------
+    None
+
+    Examples
+    --------
+    $ stash entry unpin <id>
+    """
+    app_ctx = get_ctx(ctx)
+    try:
+        entry = app_ctx.storage.update_entry(entry_id, EntryUpdate(pinned=False))
+        if app_ctx.json_output:
+            emit_json(entry_summary(entry))
+        else:
+            typer.echo(f"Unpinned '{entry.title}'")
     except (StashError, PydanticValidationError) as exc:
         message = exc.message if isinstance(exc, StashError) else str(exc)
         typer.echo(message, err=True)

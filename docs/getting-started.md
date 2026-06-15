@@ -56,6 +56,14 @@ poetry run stash entry add "Docker prune" "docker system prune -af" \
 poetry run stash entry add "Git undo" "git reset --soft HEAD~1" --tag git
 ```
 
+Quick capture from clipboard, stdin, or the `stash add` alias:
+
+```bash
+poetry run stash add "Clipboard snippet" --clipboard
+git log --oneline -5 | poetry run stash add "Recent commits" -
+poetry run stash add "Quick note" "echo hello"   # top-level alias
+```
+
 Use `--interactive` / `-i` to be prompted for fields:
 
 ```bash
@@ -71,6 +79,12 @@ poetry run stash entry list --priority high
 
 # Full-text search across title, content, URL, and tags
 poetry run stash search "docker"
+poetry run stash search prn              # fuzzy: matches "Docker prune", etc.
+poetry run stash search prn --exact      # disable fuzzy matching
+
+# Pinned favorites
+poetry run stash pins
+poetry run stash entry list --pinned
 ```
 
 ## View entry details

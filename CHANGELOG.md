@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.4.0 (2026-06-15)
 
+### Added
+
+- Pinned favorites — `pinned` flag on entries for daily go-to commands, deploy scripts, and URLs
+- `stash pins` — list pinned entries (default limit 10, sorted by title)
+- `stash entry list --pinned` — filter list to pinned entries only
+- `stash entry pin` / `stash entry unpin` — toggle pin on an existing entry
+- `--pin` on `stash entry add`; `--pin` / `--unpin` on `stash entry edit`
+
+### Fixed
+
+- `update_entry` now persists changes correctly (pin/unpin and other edits were not saved to disk)
+
 ## v0.3.0 (2026-06-15)
+
+### Added
+
+- Quick capture — `stash add` top-level alias for `stash entry add`
+- `--clipboard` on `stash entry add` — save body from the system clipboard
+- `--from-stdin` and `-` content alias — pipe or redirect text into a new entry
+- `capture.py` module for stdin/clipboard content resolution
 
 ## v0.2.0 (2026-06-15)
 

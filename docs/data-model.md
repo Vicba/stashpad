@@ -41,6 +41,7 @@ Each entry represents a saved command, snippet, URL, or note.
 | `created_at` | datetime | auto | UTC creation time |
 | `updated_at` | datetime | auto | UTC last update time |
 | `opened_at` | datetime | no | UTC last view/use time (`show`, `copy`, `run`, `open`) |
+| `pinned` | boolean | no | Favorite flag for `stash pins` (default: `false`) |
 
 Example entry:
 
@@ -54,7 +55,8 @@ Example entry:
   "priority": "high",
   "created_at": "2025-06-14T10:00:00+00:00",
   "updated_at": "2025-06-14T10:00:00+00:00",
-  "opened_at": null
+  "opened_at": null,
+  "pinned": false
 }
 ```
 

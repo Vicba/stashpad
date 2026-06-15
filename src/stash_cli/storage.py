@@ -268,15 +268,19 @@ class VaultStorage:
             Updated entry.
         """
         vault = self.require_vault()
-        entry = self.get_entry(entry_id)
-        updates = data.model_dump(exclude_unset=True)
-        for field, value in updates.items():
-            setattr(entry, field, value)
-        entry.updated_at = datetime.now(timezone.utc)
-        if data.tags is not None:
-            self._merge_tags(vault, entry.tags)
-        self.save(vault)
-        return entry
+        for entry in vault.entries:
+            if entry.id != entry_id:
+                continue
+            updates = data.model_dump(exclude_unset=True)
+            for field, value in updates.items():
+                setattr(entry, field, value)
+            entry.updated_at = datetime.now(timezone.utc)
+            if data.tags is not None:
+                self._merge_tags(vault, entry.tags)
+            self.save(vault)
+            return entry
+        msg = f"Entry '{entry_id}' not found"
+        raise EntryNotFoundError(msg)
 
     def remove_entries(self, entry_ids: list[UUID]) -> int:
         """Remove one or more entries.
@@ -349,6 +353,9 @@ class VaultStorage:
 
         if filt.until is not None:
             results = [entry for entry in results if entry.created_at <= filt.until]
+
+        if filt.pinned is not None:
+            results = [entry for entry in results if entry.pinned is filt.pinned]
 
         if filt.sort == SortOrder.NEWEST:
             results.sort(key=lambda entry: entry.created_at, reverse=True)
