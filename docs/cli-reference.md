@@ -47,7 +47,9 @@ Manage vault entries. Alias group: `entry`.
 | Argument / option | Description |
 |-------------------|-------------|
 | `TITLE` | Entry title (required) |
-| `CONTENT` | Body: command, snippet, or note (required) |
+| `CONTENT` | Body: command, snippet, or note; use `-` for stdin |
+| `--clipboard` | Read body from the system clipboard |
+| `--from-stdin` | Read body from stdin (same as `-`) |
 | `--url`, `-u` | Related http(s) URL |
 | `--tag`, `-t` | Tag (repeatable) |
 | `--tags` | Comma-separated tags (`work,python,docker`) |
@@ -56,6 +58,10 @@ Manage vault entries. Alias group: `entry`.
 
 ```bash
 stash entry add "Poetry install" "poetry install" --tag python --priority high
+stash entry add "Recent commits" -
+git log --oneline -5 | stash entry add "Recent commits" -
+stash entry add "Snippet" --clipboard
+stash add "Quick note" "echo hello"    # top-level alias
 ```
 
 ### `stash entry list` / `stash entry ls`

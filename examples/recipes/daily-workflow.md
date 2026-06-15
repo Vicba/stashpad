@@ -6,10 +6,15 @@ A typical day using Stash to capture things you look up repeatedly.
 
 ```bash
 # Something you googled twice — save it once
-stash entry add \
-  "Fix npm permissions" \
+stash add "Fix npm permissions" \
   "mkdir ~/.npm-global && npm config set prefix ~/.npm-global" \
   --tag node --tag setup
+
+# Pipe command output straight into the vault
+git log --oneline -5 | stash add "Recent commits" -
+
+# Save whatever is on the clipboard
+stash add "Clipboard snippet" --clipboard
 
 # Interactive mode when you don't have args ready
 stash entry add --interactive

@@ -1,4 +1,4 @@
-"""Tests for clipboard helpers."""
+"""Tests for clipboard read helpers."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import subprocess
 
 import pytest
 
-from stash_cli.clipboard import copy_to_clipboard
+from stash_cli.clipboard import copy_to_clipboard, read_from_clipboard
 from stash_cli.exceptions import StashError
 
 
@@ -24,6 +24,33 @@ def test_copy_to_clipboard_darwin(monkeypatch) -> None:
     copy_to_clipboard("hello")
     assert captured["command"] == ["pbcopy"]
     assert captured["input"] == b"hello"
+
+
+def test_read_from_clipboard_darwin(monkeypatch) -> None:
+    """MacOS uses pbpaste."""
+    class FakeResult:
+        stdout = "clipboard text"
+
+    def fake_run(command: list[str], /, **kwargs: object) -> FakeResult:
+        assert command == ["pbpaste"]
+        return FakeResult()
+
+    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", fake_run)
+
+    assert read_from_clipboard() == "clipboard text"
+
+
+def test_read_from_clipboard_empty(monkeypatch) -> None:
+    """Empty clipboard raises StashError."""
+    class FakeResult:
+        stdout = "   "
+
+    monkeypatch.setattr("stash_cli.clipboard.platform.system", lambda: "Darwin")
+    monkeypatch.setattr("stash_cli.clipboard.subprocess.run", lambda *args, **kwargs: FakeResult())
+
+    with pytest.raises(StashError, match="Clipboard is empty"):
+        read_from_clipboard()
 
 
 def test_copy_to_clipboard_linux_prefers_wl_copy(monkeypatch) -> None:

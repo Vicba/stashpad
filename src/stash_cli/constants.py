@@ -12,6 +12,7 @@ VAULT_SCHEMA_VERSION = "1"
 # CLI defaults
 DEFAULT_SEARCH_LIMIT = 20
 DEFAULT_LIST_LIMIT = 50
+STDIN_CONTENT_ALIAS = "-"
 
 # Search ranking: field weights (title highest, then tags, content, URL)
 TITLE_MATCH_WEIGHT = 100.0

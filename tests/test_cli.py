@@ -244,3 +244,76 @@ def test_entry_run(runner, cli_app, vault_dir, monkeypatch) -> None:
     )
     assert forced.exit_code == 0
     assert ran[-1] == "echo hello"
+
+
+def _init_vault(runner, cli_app, vault_dir) -> None:
+    """Initialize an isolated vault for capture tests."""
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "init", "--name", "test", "--force"],
+    )
+    assert result.exit_code == 0
+
+
+def test_add_top_level_alias(runner, cli_app, vault_dir) -> None:
+    """Top-level 'stash add' mirrors 'stash entry add'."""
+    _init_vault(runner, cli_app, vault_dir)
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "add", "Quick note", "echo hello"],
+    )
+    assert result.exit_code == 0
+    assert "Added entry" in result.stdout
+
+
+def test_add_from_stdin_with_dash(runner, cli_app, vault_dir) -> None:
+    """Content '-' reads piped stdin into the entry body."""
+    _init_vault(runner, cli_app, vault_dir)
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "add", "Recent commits", "-"],
+        input="abc123 Fix bug\ndef456 Add tests\n",
+    )
+    assert result.exit_code == 0
+    assert "Added entry 'Recent commits'" in result.stdout
+
+    show = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "--json", "entry", "list"],
+    )
+    entry = json.loads(show.stdout)[0]
+    assert "abc123 Fix bug" in entry["content"]
+
+
+def test_add_from_stdin_flag(runner, cli_app, vault_dir) -> None:
+    """--from-stdin reads piped content without passing '-'."""
+    _init_vault(runner, cli_app, vault_dir)
+    result = runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "add",
+            "Piped note",
+            "--from-stdin",
+        ],
+        input="piped body\n",
+    )
+    assert result.exit_code == 0
+    assert "Added entry 'Piped note'" in result.stdout
+
+
+def test_add_from_clipboard(runner, cli_app, vault_dir, monkeypatch) -> None:
+    """--clipboard stores clipboard text as entry content."""
+    _init_vault(runner, cli_app, vault_dir)
+    monkeypatch.setattr(
+        "stash_cli.capture.read_from_clipboard",
+        lambda: "clipboard snippet",
+    )
+
+    result = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "entry", "add", "Snippet", "--clipboard"],
+    )
+    assert result.exit_code == 0
+    assert "Added entry 'Snippet'" in result.stdout

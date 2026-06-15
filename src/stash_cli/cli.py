@@ -13,7 +13,7 @@ from typing import Optional
 import typer
 
 from stash_cli.commands.config_cmd import config_app
-from stash_cli.commands.entry import entry_app
+from stash_cli.commands.entry import add_entry, entry_app
 from stash_cli.commands.export import export_app
 from stash_cli.commands.import_cmd import import_entries
 from stash_cli.commands.init import init
@@ -53,6 +53,7 @@ def main(
 
 
 app.command("init")(init)
+app.command("add")(add_entry)
 app.command("search")(search)
 app.command("import")(import_entries)
 app.command("open")(open_entry)

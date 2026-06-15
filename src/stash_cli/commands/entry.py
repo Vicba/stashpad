@@ -16,9 +16,10 @@ from uuid import UUID
 import typer
 from pydantic import ValidationError as PydanticValidationError
 
+from stash_cli.capture import resolve_entry_content
 from stash_cli.clipboard import copy_to_clipboard
 from stash_cli.completions import complete_tags
-from stash_cli.constants import DEFAULT_LIST_LIMIT
+from stash_cli.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
 from stash_cli.context import get_ctx
 from stash_cli.exceptions import StashError, ValidationError
 from stash_cli.models import Entry, Priority, SortOrder
@@ -116,7 +117,10 @@ def _validate_since(value: str | None) -> datetime | None:
 def add_entry(
     ctx: typer.Context,
     title: str = typer.Argument(..., help="Entry title"),
-    content: str = typer.Argument(..., help="Entry content (command, snippet, or note)"),
+    content: Optional[str] = typer.Argument(
+        None,
+        help="Entry content, '-' for stdin, or omit with --clipboard / --from-stdin",
+    ),
     url: Optional[str] = typer.Option(
         None,
         "--url",
@@ -148,8 +152,22 @@ def add_entry(
         "-i",
         help="Prompt for missing fields interactively",
     ),
+    from_stdin: bool = typer.Option(
+        False,
+        "--from-stdin",
+        help="Read entry content from stdin (same as passing '-' as content)",
+    ),
+    from_clipboard: bool = typer.Option(
+        False,
+        "--clipboard",
+        help="Read entry content from the system clipboard",
+    ),
 ) -> None:
     """Add a new entry to the vault.
+
+    Pass ``-`` as the content argument to read from stdin::
+
+        git log --oneline -5 | stash entry add "Recent commits" -
 
     Parameters
     ----------
@@ -158,7 +176,7 @@ def add_entry(
     title : str
         Entry title positional argument.
     content : str
-        Entry body positional argument.
+        Entry body, or ``-`` to read from stdin.
     url : str, optional
         Optional http(s) URL.
     tag : list of str, optional
@@ -169,6 +187,10 @@ def add_entry(
         Entry priority enum.
     interactive : bool
         Prompt for fields when ``True``.
+    from_stdin : bool
+        Read body from stdin instead of the positional content.
+    from_clipboard : bool
+        Read body from the system clipboard.
 
     Returns
     -------
@@ -177,13 +199,17 @@ def add_entry(
     Examples
     --------
     $ stash entry add "Docker prune" "docker system prune -af" --tag devops
-    Added entry 'Docker prune' (...)
+    $ stash entry add "Recent commits" -
+    $ stash entry add "Snippet" --clipboard
+    $ stash add "Quick note" "echo hello"
     """
     app_ctx = get_ctx(ctx)
+    using_capture = from_stdin or from_clipboard or content == STDIN_CONTENT_ALIAS
 
     if interactive:
         title = typer.prompt("Title", default=title)
-        content = typer.prompt("Content", default=content)
+        if not using_capture:
+            content = typer.prompt("Content", default=content)
         if url is None:
             url_input = typer.prompt("URL (optional)", default="", show_default=False)
             url = url_input or None
@@ -191,6 +217,11 @@ def add_entry(
         tags = tag_input or tags
 
     try:
+        content = resolve_entry_content(
+            content,
+            from_stdin=from_stdin,
+            from_clipboard=from_clipboard,
+        )
         payload = EntryCreate(
             title=title,
             content=content,
