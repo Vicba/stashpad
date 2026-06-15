@@ -46,9 +46,6 @@ def copy_to_clipboard(text: str) -> None:
         raise StashError(msg) from exc
 
 
-        raise StashError(msg) from exc
-
-
 def read_from_clipboard() -> str:
     """Read text from the system clipboard.
 
