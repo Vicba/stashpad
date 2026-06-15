@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]  # https://python-poetry.org/docs/pyproject/
 name = "stashpad"
-version = "0.3.0"
+version = "0.4.0"
 description = "Stashpad — personal developer reference manager CLI."
 authors = ["Victor Barra <victor.barra@live.be>"]
 readme = "README.md"
