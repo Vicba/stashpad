@@ -8,6 +8,21 @@ body:
       value: |
         Describe the problem you're trying to solve and how Stash could help.
 
+        **Labels:** New issues get `new feature` by default. If this extends existing
+        behavior rather than adding a new command/subsystem, add the `improvement` label
+        after filing (or use the **Improvement** template instead).
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Request type
+      description: Helps maintainers triage — pick the closest match
+      options:
+        - New feature (new command, subsystem, or capability)
+        - Improvement (extends an existing command or behavior)
+    validations:
+      required: true
+
   - type: textarea
     id: problem
     attributes:

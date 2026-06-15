@@ -1,0 +1,50 @@
+name: Improvement
+description: Improve an existing command, flag, or behavior
+title: "[Improve]: "
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a change that makes something Stash already does work better —
+        not a wholly new command or subsystem.
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behavior
+      description: What exists today and what's lacking?
+      placeholder: e.g. `stash entry show` prints plain text with no syntax highlighting
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed improvement
+      description: How should it work instead? Include example commands if relevant
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - CLI command or flag
+        - Import / export
+        - Storage / data model
+        - Documentation / examples
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: This fits Stash as a developer reference manager
+          required: true
+        - label: I checked existing issues and PRs for similar requests
+          required: true
