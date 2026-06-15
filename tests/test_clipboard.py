@@ -28,6 +28,7 @@ def test_copy_to_clipboard_darwin(monkeypatch) -> None:
 
 def test_read_from_clipboard_darwin(monkeypatch) -> None:
     """MacOS uses pbpaste."""
+
     class FakeResult:
         stdout = "clipboard text"
 
@@ -43,6 +44,7 @@ def test_read_from_clipboard_darwin(monkeypatch) -> None:
 
 def test_read_from_clipboard_empty(monkeypatch) -> None:
     """Empty clipboard raises StashError."""
+
     class FakeResult:
         stdout = "   "
 
@@ -90,6 +92,7 @@ def test_copy_to_clipboard_linux_falls_back_to_xclip(monkeypatch) -> None:
 
 def test_copy_to_clipboard_linux_missing_tools(monkeypatch) -> None:
     """Linux reports a helpful error when no clipboard tool exists."""
+
     def fake_run(command: list[str], /, **kwargs: object) -> None:
         missing = "missing"
         raise OSError(missing)

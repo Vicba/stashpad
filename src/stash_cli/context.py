@@ -9,6 +9,7 @@ Typer chapters:
 from __future__ import annotations
 
 from pathlib import Path
+from typing import cast
 
 import typer
 from pydantic import BaseModel, ConfigDict
@@ -122,4 +123,4 @@ def get_ctx(ctx: typer.Context) -> AppContext:
     """
     if ctx.obj is None or not isinstance(ctx.obj, AppContext):
         raise typer.Exit(code=1)
-    return ctx.obj
+    return cast(AppContext, ctx.obj)

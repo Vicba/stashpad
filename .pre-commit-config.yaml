@@ -1,0 +1,106 @@
+# https://pre-commit.com
+# Install:  poetry run pre-commit install --install-hooks
+# Run all:  poetry run pre-commit run --all-files
+
+default_install_hook_types: [commit-msg, pre-commit]
+default_stages: [pre-commit, manual]
+fail_fast: true
+
+default_language_version:
+  python: python3.12
+
+ci:
+  autofix_prs: true
+  autoupdate_commit_msg: "chore: bump pre-commit hook versions"
+
+repos:
+  - repo: meta
+    hooks:
+      - id: check-useless-excludes
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-mock-methods
+      - id: python-use-type-annotations
+      - id: text-unicode-replacement-char
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-toml
+      - id: check-json
+      - id: check-xml
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-illegal-windows-names
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-vcs-permalinks
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: name-tests-test
+        args: [--pytest-test-first]
+
+  - repo: local
+    hooks:
+      - id: commitizen
+        name: commitizen
+        entry: poetry run cz check
+        args: [--commit-msg-file]
+        language: system
+        stages: [commit-msg]
+        require_serial: true
+
+      - id: poetry-check
+        name: poetry check
+        entry: poetry check
+        language: system
+        pass_filenames: false
+
+      - id: ruff-check
+        name: ruff check
+        entry: poetry run ruff check
+        args:
+          - --fix
+          - --force-exclude
+          - --extend-fixable=ERA001,F401,F841,T201,T203
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: poetry run ruff format
+        args: [--force-exclude]
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: shellcheck
+        name: shellcheck
+        entry: poetry run shellcheck
+        args: [--check-sourced, -S, warning]
+        language: system
+        types: [shell]
+
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy
+        args: [src]
+        language: system
+        pass_filenames: false
+        require_serial: true

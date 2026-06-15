@@ -17,7 +17,7 @@ packages = [{ include = "stash_cli", from = "src" }]
 keywords = ["python", "cli", "package", "typer"]
 classifiers = [
     "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12"

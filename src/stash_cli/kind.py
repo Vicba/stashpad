@@ -152,12 +152,11 @@ def _content_looks_like_shell_command(content: str) -> bool:
         if line.startswith("#"):
             continue
         lower = line.lower()
-        if lower.startswith(_SHELL_COMMAND_PREFIXES):
-            command_like_lines += 1
-        elif any(token in line for token in _SHELL_OPERATOR_TOKENS):
-            command_like_lines += 1
-        # e.g. "mytool -f file" or "mytool --verbose"
-        elif re.match(r"^[\w./~-]+(\s+-[\w-]+|\s+--[\w-]+)", line):
+        if (
+            lower.startswith(_SHELL_COMMAND_PREFIXES)
+            or any(token in line for token in _SHELL_OPERATOR_TOKENS)
+            or re.match(r"^[\w./~-]+(\s+-[\w-]+|\s+--[\w-]+)", line)
+        ):
             command_like_lines += 1
 
     # One line must look like a command; multi-line scripts need a majority.

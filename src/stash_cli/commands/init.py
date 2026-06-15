@@ -69,8 +69,7 @@ def init(
 
     if app_ctx.storage.is_initialized and not force:
         typer.echo(
-            f"Vault already exists at {app_ctx.storage.data_dir}. "
-            "Use --force to re-initialize.",
+            f"Vault already exists at {app_ctx.storage.data_dir}. Use --force to re-initialize.",
             err=True,
         )
         raise typer.Exit(code=1)

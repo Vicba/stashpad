@@ -89,9 +89,7 @@ def _validate_since(value: str | None) -> datetime | None:
         return datetime.fromisoformat(value)
     except ValueError as exc:
         msg = f"Invalid date '{value}'. Use YYYY-MM-DD or ISO datetime."
-        raise typer.BadParameter(
-            msg
-        ) from exc
+        raise typer.BadParameter(msg) from exc
 
 
 @entry_app.command("add")
@@ -255,13 +253,13 @@ def list_entries(
         autocompletion=complete_tags,
     ),
     priority: Optional[Priority] = typer.Option(None, "--priority", "-p"),
-    since: Optional[str] = typer.Option(
+    since: Optional[datetime] = typer.Option(
         None,
         "--since",
         help="Show entries created on or after this date",
         callback=_validate_since,
     ),
-    until: Optional[str] = typer.Option(
+    until: Optional[datetime] = typer.Option(
         None,
         "--until",
         help="Show entries created on or before this date",
@@ -414,9 +412,7 @@ def run_entry(
     app_ctx = get_ctx(ctx)
     try:
         entry = app_ctx.storage.touch_entry(entry_id)
-        exit_code = execute_entry_command(
-            entry, first_line_only=first_line, force=force
-        )
+        exit_code = execute_entry_command(entry, first_line_only=first_line, force=force)
         if app_ctx.json_output:
             command = get_entry_body_text(entry, first_line_only=first_line)
             emit_json(

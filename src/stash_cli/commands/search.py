@@ -54,7 +54,7 @@ def search(
         query = typer.prompt("Search query")
 
     try:
-        search_query = SearchQuery(query=query, limit=limit, fuzzy=not exact)
+        search_query = SearchQuery(query=query or "", limit=limit, fuzzy=not exact)
         results = app_ctx.storage.search(search_query)
         if app_ctx.json_output:
             emit_json([entry_summary(entry) for entry in results])

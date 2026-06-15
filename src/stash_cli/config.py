@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Any
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -94,7 +95,7 @@ def get_settings(data_dir: Path | None = None) -> Settings:
     return settings
 
 
-def get_config(data_dir: Path | None = None) -> dict:
+def get_config(data_dir: Path | None = None) -> dict[str, Any]:
     """Get current configuration as a JSON-serializable dictionary.
 
     Parameters

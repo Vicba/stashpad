@@ -64,7 +64,12 @@ def rank_search_results(
     ranked = [
         (score, entry)
         for entry in entries
-        if (score := entry_relevance_score(entry, tokens, fuzzy=fuzzy, reference_time=reference_time)) > 0
+        if (
+            score := entry_relevance_score(
+                entry, tokens, fuzzy=fuzzy, reference_time=reference_time
+            )
+        )
+        > 0
     ]
     ranked.sort(key=lambda item: item[0], reverse=True)
 
@@ -337,8 +342,6 @@ def decayed_recency_boost(
     if timestamp is None:
         return 0.0
 
-    aware_timestamp = (
-        timestamp if timestamp.tzinfo else timestamp.replace(tzinfo=timezone.utc)
-    )
+    aware_timestamp = timestamp if timestamp.tzinfo else timestamp.replace(tzinfo=timezone.utc)
     age_days = max((reference_time - aware_timestamp).total_seconds() / 86_400, 0.0)
-    return boost_cap * (0.5 ** (age_days / BOOST_HALF_LIFE_DAYS))
+    return float(boost_cap * (0.5 ** (age_days / BOOST_HALF_LIFE_DAYS)))

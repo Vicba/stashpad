@@ -5,6 +5,9 @@ Typer chapter: CLI Option autocompletion — https://typer.tiangolo.com/tutorial
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import cast
+
 import typer
 
 from stash_cli.config import default_data_dir
@@ -28,8 +31,8 @@ def complete_export_formats(ctx: typer.Context, args: list[str], incomplete: str
     return [fmt.value for fmt in ExportFormat if fmt.value.startswith(incomplete)]
 
 
-def _resolve_data_dir(ctx: typer.Context):
+def _resolve_data_dir(ctx: typer.Context) -> Path:
     """Read data directory from context or fall back to default."""
     if ctx.obj is not None and isinstance(ctx.obj, AppContext):
-        return ctx.obj.storage.data_dir
+        return cast(Path, ctx.obj.storage.data_dir)
     return default_data_dir()

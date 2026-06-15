@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 from stash_cli.models import Entry, ExportFormat, Vault
 from stash_cli.schemas import ImportPayload
 
 
-def entry_to_dict(entry: Entry) -> dict:
+def entry_to_dict(entry: Entry) -> dict[str, Any]:
     """Serialize an entry to a plain dictionary.
 
     Parameters

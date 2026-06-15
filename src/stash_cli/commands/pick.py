@@ -12,7 +12,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 from collections.abc import Callable
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 import typer
 from pydantic import ValidationError as PydanticValidationError
@@ -31,6 +31,9 @@ from stash_cli.models import Entry, EntryKind
 from stash_cli.output import emit_json, entry_summary
 from stash_cli.schemas import EntryFilter
 from stash_cli.search_rank import rank_search_results
+
+if TYPE_CHECKING:
+    from stash_cli.storage import VaultStorage
 
 EntryPickerFn = Callable[[list[Entry], str], Entry | None]
 PickAction = Literal["copy", "run", "open"]
@@ -160,7 +163,7 @@ def _combine_tag_filters(tags: str | None, tag: list[str] | None) -> list[str] |
 
 
 def _load_entries_for_pick(
-    storage,
+    storage: VaultStorage,
     *,
     query: str,
     tags: list[str] | None,

@@ -28,16 +28,12 @@ def test_detect_snippet() -> None:
 
 
 def test_detect_note_fallback() -> None:
-    kind = detect_entry_kind(
-        content="Remember to review the deploy checklist.", url=None
-    )
+    kind = detect_entry_kind(content="Remember to review the deploy checklist.", url=None)
     assert kind == EntryKind.NOTE
 
 
 def test_explicit_kind_overrides_detection() -> None:
-    kind = detect_entry_kind(
-        content="kubectl apply -f", url=None, explicit_kind=EntryKind.NOTE
-    )
+    kind = detect_entry_kind(content="kubectl apply -f", url=None, explicit_kind=EntryKind.NOTE)
     assert kind == EntryKind.NOTE
 
 

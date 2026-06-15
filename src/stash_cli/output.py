@@ -6,7 +6,7 @@ import json
 from typing import Any
 
 import typer
-from rich.console import Console, Group
+from rich.console import Console, Group, RenderableType
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.table import Table
@@ -121,7 +121,7 @@ def _syntax_lexer_for_snippet(entry: Entry) -> str:
     return "text"
 
 
-def _render_entry_body_by_kind(entry: Entry) -> object:
+def _render_entry_body_by_kind(entry: Entry) -> RenderableType:
     """Render entry body with syntax highlighting or links based on ``entry.kind``."""
     if entry.kind == EntryKind.SNIPPET and entry.content.strip():
         return Syntax(
@@ -176,7 +176,7 @@ def print_entry_detail(entry: Entry) -> None:
     )
 
 
-def entry_summary(entry: Entry) -> dict:
+def entry_summary(entry: Entry) -> dict[str, Any]:
     """Return a JSON-serializable entry summary.
 
     Parameters

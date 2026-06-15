@@ -119,9 +119,7 @@ class VaultStorage:
         """
         if not self.is_initialized:
             msg = "Vault not initialized. Run 'stash init' first."
-            raise VaultNotInitializedError(
-                msg
-            )
+            raise VaultNotInitializedError(msg)
         return self.load()
 
     def load(self) -> Vault:
@@ -340,9 +338,7 @@ class VaultStorage:
         if filt.tags:
             tag_set = {tag.lower() for tag in filt.tags}
             results = [
-                entry
-                for entry in results
-                if tag_set.issubset({t.lower() for t in entry.tags})
+                entry for entry in results if tag_set.issubset({t.lower() for t in entry.tags})
             ]
 
         if filt.priority is not None:
@@ -396,7 +392,11 @@ class VaultStorage:
         >>> s.search(SearchQuery(query="missing"))
         []
         """
-        search = SearchQuery(query=query, limit=limit or DEFAULT_SEARCH_LIMIT) if isinstance(query, str) else query
+        search = (
+            SearchQuery(query=query, limit=limit or DEFAULT_SEARCH_LIMIT)
+            if isinstance(query, str)
+            else query
+        )
 
         vault = self.require_vault()
         return rank_search_results(

@@ -10,9 +10,6 @@ from stash_cli.schemas import EntryCreate, EntryFilter, EntryUpdate, SearchQuery
 from stash_cli.storage import VaultStorage
 
 __all__ = [
-    "__version__",
-    "__author__",
-    "__email__",
     "Entry",
     "EntryCreate",
     "EntryFilter",
@@ -21,6 +18,9 @@ __all__ = [
     "SearchQuery",
     "Vault",
     "VaultStorage",
+    "__author__",
+    "__email__",
+    "__version__",
     "get_config",
     "get_settings",
 ]
