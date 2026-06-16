@@ -143,6 +143,7 @@ unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 "src/stashpad/kind.py" = ["PLR2004"]
 "src/stashpad/entry_actions.py" = ["FBT001", "TRY003", "EM101", "EM102"]
 "src/stashpad/storage.py" = ["C901"]
+"tests/**/*.py" = ["PLR2004", "D103"]
 "tests/test_mcp_cmd.py" = ["PLR2004", "D103", "SLF001"]
 
 [tool.ruff.lint.flake8-tidy-imports]
