@@ -87,6 +87,7 @@ From source:
 git clone https://github.com/Vicba/stash-cli.git
 cd stash-cli
 poetry install
+poetry install -E mcp   # optional: MCP server for Cursor / Claude Desktop
 poetry run stash init --name my-vault
 ```
 
@@ -100,6 +101,7 @@ poetry run stash init --name my-vault
 | `stash pins` | List pinned favorites |
 | `stash pick` | Interactive fzf-style picker (`--copy`, `--run`, `--open`) |
 | `stash search` | Fuzzy ranked search (`--exact` to disable) |
+| `stash mcp serve` | MCP server for AI assistants (`poetry install -E mcp`, Python 3.10+) |
 | `stash tags list/add/remove` | Nested subcommands |
 | `stash export json/markdown` | Export with Path types and progress bars |
 | `stash import` | Import from JSON files |
@@ -136,6 +138,7 @@ src/stashpad/
   models.py           # Entry, Vault, enums
   storage.py          # JSON persistence (~/.config/stash/)
   commands/           # one module per command group
+  mcp/                # MCP service + FastMCP server
 docs/                 # Reference documentation
 tests/                # CLI tests
 ```

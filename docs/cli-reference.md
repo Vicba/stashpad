@@ -137,6 +137,31 @@ stash pick --run --pinned
 alias sp='stash pick --copy'    # shell alias
 ```
 
+### `stash mcp`
+
+Model Context Protocol server for AI assistants (Cursor, Claude Desktop). Exposes vault search, list, get, and optionally add over stdio.
+
+Requires the optional MCP extra (Python 3.10+):
+
+```bash
+poetry install -E mcp
+```
+
+| Argument / option | Description |
+|-------------------|-------------|
+| `serve` | Start the MCP server on stdio (blocks until the client disconnects) |
+| `--read-only` | Register only read tools; omit `stash_add` |
+
+**MCP tools:** `stash_search`, `stash_list`, `stash_get`, `stash_add` (write mode only)
+
+```bash
+stash mcp serve
+stash mcp serve --read-only
+stash --config-dir /path/to/vault mcp serve
+```
+
+Full setup guide with Cursor config examples: [MCP integration](mcp.md).
+
 ### `stash entry show`
 
 | Argument | Description |
