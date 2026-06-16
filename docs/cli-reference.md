@@ -137,6 +137,52 @@ stash pick --run --pinned
 alias sp='stash pick --copy'    # shell alias
 ```
 
+### `stash browse`
+
+Split-pane terminal UI for exploring vault entries. Toggle tag filters on the left
+to narrow the list — select multiple tags to show entries with **any** of them (OR logic).
+Requires the optional TUI extra:
+
+```bash
+poetry install -E tui
+```
+
+| Argument / option | Description |
+|-------------------|-------------|
+| `[QUERY]` | Optional initial fuzzy filter |
+| `--pinned` | Only pinned entries |
+| `--kind` | Filter by entry kind |
+| `--tag`, `-t` / `--tags` | Tag filters |
+| `--limit`, `-l` | Maximum candidates (default: 100) |
+| `--exact` | Disable fuzzy matching |
+| `--first-line`, `-1` | Copy or run only the first non-empty line |
+| `--force`, `-F` | Skip run confirmation |
+
+**Keyboard shortcuts** (inside the TUI):
+
+| Key | Action |
+|-----|--------|
+| `t` | Focus tag filters |
+| `Space` / `Enter` | Toggle the highlighted tag filter on or off |
+| `l` | Focus entry list |
+| `/` | Focus search |
+| `c` | Copy selected entry |
+| `o` | Open URL (url entries only) |
+| `r` | Run command (command entries only) |
+| `d` | Delete selected entry (with confirmation) |
+| `q` | Quit |
+
+Tag filters appear **above the search bar** in the browse column. Select multiple tags
+(e.g. `devops` + `k8s`) to show entries that have **any** selected tag. Choose
+**All entries** to clear tag filters. **Untagged** is exclusive.
+On narrow terminals the preview moves below the list; tag filters stay visible.
+
+```bash
+stash browse
+stash browse deploy --tag devops
+stash --config-dir /path/to/vault browse --pinned
+```
+
 ### `stash entry show`
 
 | Argument | Description |

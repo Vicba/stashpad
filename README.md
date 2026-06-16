@@ -34,6 +34,7 @@ stash add "Quick note" "echo hello"              # top-level alias
 git log -5 | stash add "Recent commits" -      # pipe into vault
 stash pins                                       # pinned favorites
 stash pick deploy --copy                         # interactive picker
+stash browse                                     # split-pane TUI (poetry install -E tui)
 stash search "prune"                             # fuzzy ranked search
 stash entry copy <id> --first-line               # copy command to clipboard
 stash entry run <id>                             # run with confirmation
@@ -87,6 +88,7 @@ From source:
 git clone https://github.com/Vicba/stash-cli.git
 cd stash-cli
 poetry install
+poetry install -E tui   # optional: split-pane browse UI
 poetry run stash init --name my-vault
 ```
 
@@ -99,6 +101,7 @@ poetry run stash init --name my-vault
 | `stash entry add/list/show/edit/remove/copy/run/pin/unpin` | CRUD with UUID, enums, filters, aliases (`ls`, `rm`) |
 | `stash pins` | List pinned favorites |
 | `stash pick` | Interactive fzf-style picker (`--copy`, `--run`, `--open`) |
+| `stash browse` | Split-pane TUI browser (`poetry install -E tui`) |
 | `stash search` | Fuzzy ranked search (`--exact` to disable) |
 | `stash tags list/add/remove` | Nested subcommands |
 | `stash export json/markdown` | Export with Path types and progress bars |

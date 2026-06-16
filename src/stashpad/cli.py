@@ -12,6 +12,7 @@ from typing import Optional
 
 import typer
 
+from stashpad.commands.browse import browse
 from stashpad.commands.config_cmd import config_app
 from stashpad.commands.entry import add_entry, entry_app
 from stashpad.commands.export import export_app
@@ -58,6 +59,7 @@ app.command("init")(init)
 app.command("add")(add_entry)
 app.command("pins")(list_pins)
 app.command("pick")(pick)
+app.command("browse")(browse)
 app.command("search")(search)
 app.command("import")(import_entries)
 app.command("open")(open_entry)
