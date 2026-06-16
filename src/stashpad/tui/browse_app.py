@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from textual import on, work
-from textual.app import App, ComposeResult
+from textual.app import App
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.events import Key, Resize
@@ -38,6 +39,8 @@ from stashpad.tui.browse_tags import (
 
 if TYPE_CHECKING:
     from uuid import UUID
+
+    from textual.widget import Widget
 
     from stashpad.storage import VaultStorage
 
@@ -189,7 +192,7 @@ class ConfirmDeleteScreen(ModalScreen[bool]):
         super().__init__()
         self.entry_title = entry_title
 
-    def compose(self) -> ComposeResult:
+    def compose(self) -> Iterator[Widget]:
         yield Vertical(
             Static("Delete this entry?", id="confirm_title"),
             Static(self.entry_title, id="confirm_target"),
@@ -230,7 +233,7 @@ class ConfirmRunScreen(ModalScreen[bool]):
         super().__init__()
         self.command = command
 
-    def compose(self) -> ComposeResult:
+    def compose(self) -> Iterator[Widget]:
         yield Vertical(
             Static("Run this command?", id="confirm_title"),
             Static(self.command, id="confirm_command"),
@@ -272,7 +275,7 @@ class BrowseApp(App[None]):
         self._untagged_only = False
         self._search_query = options.query
 
-    def compose(self) -> ComposeResult:
+    def compose(self) -> Iterator[Widget]:
         yield Horizontal(
             Vertical(
                 Vertical(
