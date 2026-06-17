@@ -19,7 +19,12 @@ from stashpad.capture import resolve_entry_content
 from stashpad.clipboard import copy_to_clipboard
 from stashpad.completions import complete_tags
 from stashpad.constants import DEFAULT_LIST_LIMIT, STDIN_CONTENT_ALIAS
-from stashpad.context import get_ctx
+from stashpad.context import AppContext, get_ctx
+from stashpad.duplicates import (
+    duplicate_candidate_summary,
+    find_duplicate_candidates,
+    format_duplicate_warning,
+)
 from stashpad.entry_actions import (
     execute_entry_command,
     get_clipboard_text,
@@ -27,7 +32,7 @@ from stashpad.entry_actions import (
 )
 from stashpad.exceptions import StashError, ValidationError
 from stashpad.kind import normalize_new_entry
-from stashpad.models import EntryKind, Priority, SortOrder
+from stashpad.models import Entry, EntryKind, Priority, SortOrder
 from stashpad.output import emit_json, entry_summary, print_entry_detail, render_entry_list
 from stashpad.schemas import EntryCreate, EntryFilter, EntryUpdate
 from stashpad.types import validate_url
@@ -92,6 +97,33 @@ def _validate_since(value: str | None) -> datetime | None:
         raise typer.BadParameter(msg) from exc
 
 
+def _confirm_add_after_duplicate_check(
+    app_ctx: AppContext,
+    payload: EntryCreate,
+    existing_entries: list[Entry],
+) -> bool:
+    """Warn about duplicates and return whether the add should proceed."""
+    duplicate_candidates = find_duplicate_candidates(payload, existing_entries)
+    if not duplicate_candidates:
+        return True
+    if app_ctx.json_output:
+        emit_json(
+            {
+                "added": False,
+                "duplicate_candidates": [
+                    duplicate_candidate_summary(match) for match in duplicate_candidates
+                ],
+            }
+        )
+        return False
+    for match in duplicate_candidates:
+        typer.echo(format_duplicate_warning(match))
+    if not typer.confirm("Continue?", default=False):
+        typer.echo("Cancelled.")
+        return False
+    return True
+
+
 @entry_app.command("add")
 def add_entry(
     ctx: typer.Context,
@@ -147,6 +179,7 @@ def add_entry(
         "--kind",
         help="Entry type: command, url, snippet, or note (inferred when omitted)",
     ),
+    force: bool = typer.Option(False, "--force", "-F", help="Skip duplicate warning"),
 ) -> None:
     """Add a new entry to the vault.
 
@@ -224,9 +257,15 @@ def add_entry(
             pinned=pin,
             kind=resolved_kind,
         )
+        if not force:
+            vault = app_ctx.storage.require_vault()
+            if not _confirm_add_after_duplicate_check(app_ctx, payload, vault.entries):
+                return
         entry = app_ctx.storage.add_entry(payload)
         if app_ctx.json_output:
-            emit_json(entry_summary(entry))
+            result = entry_summary(entry)
+            result["added"] = True
+            emit_json(result)
         else:
             typer.echo(f"Added entry '{entry.title}' ({entry.id})")
     except (StashError, PydanticValidationError) as exc:

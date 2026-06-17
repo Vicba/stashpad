@@ -385,3 +385,112 @@ def test_entry_pin_unpin(runner, cli_app, vault_dir) -> None:
 
     pins_after = runner.invoke(cli_app, ["--config-dir", str(vault_dir), "pins"])
     assert "Toggle me" not in pins_after.stdout
+
+
+def test_add_duplicate_cancelled(runner, cli_app, vault_dir) -> None:
+    """Adding a duplicate entry is cancelled when user declines."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Deploy",
+            "kubectl apply -f deploy.yaml",
+        ],
+    )
+
+    cancelled = runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Deploy again",
+            "kubectl apply -f deploy.yaml",
+        ],
+        input="n\n",
+    )
+    assert cancelled.exit_code == 0
+    assert "Warning: similar entry exists" in cancelled.stdout
+    assert "Cancelled" in cancelled.stdout
+
+    listed = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "--json", "entry", "list"],
+    )
+    assert len(json.loads(listed.stdout)) == 1
+
+
+def test_add_duplicate_force(runner, cli_app, vault_dir) -> None:
+    """Adding a duplicate entry succeeds with --force."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Deploy",
+            "kubectl apply -f deploy.yaml",
+        ],
+    )
+
+    forced = runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Deploy again",
+            "kubectl apply -f deploy.yaml",
+            "--force",
+        ],
+    )
+    assert forced.exit_code == 0
+    assert "Added entry" in forced.stdout
+
+    listed = runner.invoke(
+        cli_app,
+        ["--config-dir", str(vault_dir), "--json", "entry", "list"],
+    )
+    assert len(json.loads(listed.stdout)) == 2
+
+
+def test_add_duplicate_json(runner, cli_app, vault_dir) -> None:
+    """JSON mode returns duplicate candidates without adding."""
+    _init_vault(runner, cli_app, vault_dir)
+    runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "entry",
+            "add",
+            "Deploy",
+            "kubectl apply -f deploy.yaml",
+        ],
+    )
+
+    result = runner.invoke(
+        cli_app,
+        [
+            "--config-dir",
+            str(vault_dir),
+            "--json",
+            "entry",
+            "add",
+            "Deploy again",
+            "kubectl apply -f deploy.yaml",
+        ],
+    )
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["added"] is False
+    assert len(payload["duplicate_candidates"]) == 1
+    assert payload["duplicate_candidates"][0]["matched_field"] == "content"
