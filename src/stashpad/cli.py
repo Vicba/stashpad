@@ -17,6 +17,7 @@ from stashpad.commands.entry import add_entry, entry_app
 from stashpad.commands.export import export_app
 from stashpad.commands.import_cmd import import_entries
 from stashpad.commands.init import init
+from stashpad.commands.mcp import mcp_app
 from stashpad.commands.open_cmd import open_entry
 from stashpad.commands.pick import pick
 from stashpad.commands.pins import list_pins
@@ -66,6 +67,7 @@ app.add_typer(entry_app, name="entry")
 app.add_typer(tags_app, name="tags")
 app.add_typer(export_app, name="export")
 app.add_typer(config_app, name="config")
+app.add_typer(mcp_app, name="mcp")
 
 
 if __name__ == "__main__":

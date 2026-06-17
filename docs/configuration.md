@@ -53,6 +53,10 @@ Inspect the active path:
 stash config path
 ```
 
+## MCP (AI assistants)
+
+To expose your vault to Cursor or Claude Desktop, install the MCP extra and configure the client to run `stash mcp serve`. See [MCP integration](mcp.md) for setup, tool reference, and example `mcp.json` configs.
+
 ## View current settings
 
 ```bash

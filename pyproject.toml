@@ -44,6 +44,12 @@ typer = { extras = ["all"], version = ">=0.9.0" }
 
 poethepoet = ">=0.20.0"
 
+mcp = { version = ">=1.26.0,<2.0.0", optional = true, python = ">=3.10,<3.13" }
+
+
+[tool.poetry.extras]
+mcp = ["mcp"]
+
 
 [tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 coverage = { extras = ["toml"], version = ">=7.2.5" }
@@ -61,6 +67,8 @@ shellcheck-py = ">=0.9.0"
 
 
 commitizen = ">=3.2.1"
+
+mcp = { version = ">=1.26.0,<2.0.0", python = ">=3.10,<3.13" }
 
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
@@ -128,11 +136,15 @@ unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 "src/stashpad/schemas.py" = ["TCH003"]
 "src/stashpad/completions.py" = ["TCH002"]
 "src/stashpad/commands/pick.py" = ["C901", "S603", "TRY003", "EM101", "EM102"]
+"src/stashpad/commands/mcp.py" = ["B008", "FBT001", "FBT002", "FBT003", "UP007", "TCH001", "TCH003"]
+"src/stashpad/mcp/server.py" = ["TCH001", "TCH002", "FBT001", "FBT002", "FBT003", "PLR0913", "SLF001"]
+"src/stashpad/mcp/service.py" = ["TCH001", "PLR0913"]
 "src/stashpad/clipboard.py" = ["S603", "S607"]
 "src/stashpad/kind.py" = ["PLR2004"]
 "src/stashpad/entry_actions.py" = ["FBT001", "TRY003", "EM101", "EM102"]
 "src/stashpad/storage.py" = ["C901"]
 "tests/**/*.py" = ["PLR2004", "D103"]
+"tests/test_mcp_cmd.py" = ["PLR2004", "D103", "SLF001"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
