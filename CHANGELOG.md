@@ -5,15 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.7.0 (Unreleased)
-
-### Added
-
-- `stash mcp serve` — MCP server for AI assistants (Cursor, Claude Desktop) over stdio
-- MCP tools: `stash_search`, `stash_list`, `stash_get`, `stash_add`
-- Optional `mcp` extra — `poetry install -E mcp` (requires Python 3.10+)
-- `--read-only` mode — expose search/list/get without write access
-
 ## v0.6.0 (2026-06-15)
 
 ### Added
