@@ -5,14 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v0.7.0 (Unreleased)
-
-### Added
-
-- `stash browse` — split-pane TUI for exploring vault entries (searchable list + preview + tag folders)
-- Optional `tui` extra — `poetry install -E tui` installs Textual for browse mode
-- Keyboard shortcuts in browse: copy, open URL, run command, delete, quit
-
 ## v0.6.0 (2026-06-15)
 
 ### Added
