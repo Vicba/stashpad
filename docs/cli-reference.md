@@ -57,6 +57,7 @@ Manage vault entries. Alias group: `entry`.
 | `--interactive`, `-i` | Prompt for missing fields |
 | `--pin` | Pin entry for quick access via `stash pins` |
 | `--kind` | Entry type: `command`, `url`, `snippet`, or `note` (inferred when omitted) |
+| `--force`, `-F` | Skip duplicate warning and add anyway |
 
 ```bash
 stash entry add "Poetry install" "poetry install" --tag python --priority high
@@ -66,6 +67,24 @@ git log --oneline -5 | stash entry add "Recent commits" -
 stash entry add "Snippet" --clipboard
 stash add "Quick note" "echo hello"    # top-level alias
 ```
+
+When a similar entry already exists, the CLI warns and prompts to continue. With `--json`, duplicate candidates are returned instead of adding:
+
+```json
+{
+  "added": false,
+  "duplicate_candidates": [
+    {
+      "id": "abc12345-...",
+      "title": "Docker cleanup",
+      "score": 0.87,
+      "matched_field": "title"
+    }
+  ]
+}
+```
+
+Re-run with `--force` to add anyway.
 
 ### `stash entry list` / `stash entry ls`
 
@@ -285,12 +304,33 @@ Import entries from JSON file(s).
 | `--from-file`, `-f` | Single JSON file |
 | `--directory`, `-d` | Directory of `*.json` files |
 | `--dry-run` | Validate without writing to vault |
+| `--ignore-duplicates` | Import entries even when similar to existing vault entries |
 
 One of `--from-file` or `--directory` is required.
 
 ```bash
 stash import --from-file ./backup.json
 stash import --directory ./exports/ --dry-run
+stash import --from-file ./backup.json --ignore-duplicates
+```
+
+By default, entries with similar title or content are skipped. The summary lists skipped duplicates. With `--json`:
+
+```json
+{
+  "imported": 8,
+  "skipped_duplicates": 2,
+  "dry_run": false,
+  "files": 1,
+  "duplicates": [
+    {
+      "id": "abc12345-...",
+      "title": "Deploy",
+      "score": 1.0,
+      "matched_field": "content"
+    }
+  ]
+}
 ```
 
 See [Data model](data-model.md#import-format) for accepted JSON shapes.
