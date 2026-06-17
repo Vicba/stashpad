@@ -43,11 +43,12 @@ typer = { extras = ["all"], version = ">=0.9.0" }
 
 
 poethepoet = ">=0.20.0"
-
+textual = { version = ">=0.47.0", optional = true }
 mcp = { version = ">=1.26.0,<2.0.0", optional = true, python = ">=3.10,<3.13" }
 
 
 [tool.poetry.extras]
+tui = ["textual"]
 mcp = ["mcp"]
 
 
@@ -67,7 +68,7 @@ shellcheck-py = ">=0.9.0"
 
 
 commitizen = ">=3.2.1"
-
+textual = ">=0.47.0"
 mcp = { version = ">=1.26.0,<2.0.0", python = ">=3.10,<3.13" }
 
 
@@ -136,6 +137,11 @@ unfixable = ["ERA001", "F401", "F841", "T201", "T203"]
 "src/stashpad/schemas.py" = ["TCH003"]
 "src/stashpad/completions.py" = ["TCH002"]
 "src/stashpad/commands/pick.py" = ["C901", "S603", "TRY003", "EM101", "EM102"]
+"src/stashpad/commands/browse.py" = ["B008", "FBT001", "FBT002", "FBT003", "PLR0913", "UP007", "TCH001", "TCH003"]
+"src/stashpad/entry_query.py" = ["TCH001", "PLR0913"]
+"src/stashpad/tui/browse_app.py" = ["ANN001", "TCH003", "FBT001", "FBT002", "FBT003", "D102", "RUF012", "PLR2004"]
+"src/stashpad/tui/browse_tags.py" = ["TCH001", "PLR0913"]
+"tests/test_browse.py" = ["PLR2004", "D103", "SLF001", "FBT003"]
 "src/stashpad/commands/mcp.py" = ["B008", "FBT001", "FBT002", "FBT003", "UP007", "TCH001", "TCH003"]
 "src/stashpad/mcp/server.py" = ["TCH001", "TCH002", "FBT001", "FBT002", "FBT003", "PLR0913", "SLF001"]
 "src/stashpad/mcp/service.py" = ["TCH001", "PLR0913"]

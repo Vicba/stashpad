@@ -147,12 +147,8 @@ def _render_entry_body_by_kind(entry: Entry) -> RenderableType:
     return "[dim]No content[/dim]"
 
 
-def print_entry_detail(entry: Entry) -> None:
-    """Render a single entry as a Rich panel with kind-specific body formatting.
-
-    Snippets and commands use syntax highlighting; URL entries show a clickable
-    link; notes render as plain text.
-    """
+def _entry_metadata_lines(entry: Entry) -> list[str]:
+    """Return metadata lines shared by terminal and TUI entry previews."""
     lines = [
         f"[bold]ID:[/bold] {entry.id}",
         f"[bold]Kind:[/bold] {entry.kind.value}",
@@ -162,18 +158,39 @@ def print_entry_detail(entry: Entry) -> None:
         f"[bold]Created:[/bold] {entry.created_at.isoformat()}",
         f"[bold]Updated:[/bold] {entry.updated_at.isoformat()}",
     ]
-    # For non-URL kinds, show url as metadata; URL kind renders it in the body.
     if entry.url and entry.kind != EntryKind.URL:
         lines.append(f"[bold]URL:[/bold] {entry.url}")
+    return lines
 
+
+def entry_preview_renderable(entry: Entry) -> RenderableType:
+    """Return a Rich panel for the entry detail preview (TUI or terminal).
+
+    Parameters
+    ----------
+    entry : Entry
+        Vault entry to render.
+
+    Returns
+    -------
+    RenderableType
+        Rich ``Panel`` with metadata and kind-specific body formatting.
+    """
     body = _render_entry_body_by_kind(entry)
-    console.print(
-        Panel(
-            Group(*lines, "", body),
-            title=entry.title,
-            border_style="blue",
-        )
+    return Panel(
+        Group(*_entry_metadata_lines(entry), "", body),
+        title=entry.title,
+        border_style="blue",
     )
+
+
+def print_entry_detail(entry: Entry) -> None:
+    """Render a single entry as a Rich panel with kind-specific body formatting.
+
+    Snippets and commands use syntax highlighting; URL entries show a clickable
+    link; notes render as plain text.
+    """
+    console.print(entry_preview_renderable(entry))
 
 
 def entry_summary(entry: Entry) -> dict[str, Any]:

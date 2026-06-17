@@ -12,7 +12,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import Literal, Optional
 
 import typer
 from pydantic import ValidationError as PydanticValidationError
@@ -26,14 +26,15 @@ from stashpad.entry_actions import (
     get_clipboard_text,
     open_entry_in_browser,
 )
+from stashpad.entry_query import (
+    combine_tag_filters,
+    format_entry_label,
+    load_browsable_entries,
+)
 from stashpad.exceptions import StashError, ValidationError
 from stashpad.models import Entry, EntryKind
 from stashpad.output import emit_json, entry_summary
-from stashpad.schemas import EntryFilter
 from stashpad.search_rank import rank_search_results
-
-if TYPE_CHECKING:
-    from stashpad.storage import VaultStorage
 
 EntryPickerFn = Callable[[list[Entry], str], Entry | None]
 PickAction = Literal["copy", "run", "open"]
@@ -80,10 +81,10 @@ def pick(
 
     try:
         # Step 1: load candidates (storage filter + optional fuzzy rank).
-        entries = _load_entries_for_pick(
+        entries = load_browsable_entries(
             app_ctx.storage,
             query=query or "",
-            tags=_combine_tag_filters(tags, tag),
+            tags=combine_tag_filters(tags, tag),
             pinned=pinned,
             kind=kind,
             limit=limit,
@@ -152,41 +153,6 @@ def _pick_action_from_flags(*, copy: bool, run: bool, open_browser: bool) -> Pic
     return "copy"
 
 
-def _combine_tag_filters(tags: str | None, tag: list[str] | None) -> list[str] | None:
-    """Merge ``--tags`` and repeated ``--tag`` values into one filter list."""
-    combined: list[str] = []
-    if tags:
-        combined.extend(part.strip() for part in tags.split(",") if part.strip())
-    if tag:
-        combined.extend(tag)
-    return combined or None
-
-
-def _load_entries_for_pick(
-    storage: VaultStorage,
-    *,
-    query: str,
-    tags: list[str] | None,
-    pinned: bool,
-    kind: EntryKind | None,
-    limit: int,
-    exact: bool,
-) -> list[Entry]:
-    """List vault entries for the picker, then fuzzy-rank by *query*."""
-    entries = storage.list_entries(
-        EntryFilter(
-            tags=tags,
-            pinned=True if pinned else None,
-            kind=kind,
-            limit=limit,
-        )
-    )
-    # No query: show storage order. With query: re-rank by fuzzy match score.
-    if not query:
-        return entries
-    return rank_search_results(entries, query, limit=limit, fuzzy=not exact)
-
-
 def _execute_pick_action(
     entry: Entry,
     action: PickAction,
@@ -213,8 +179,7 @@ def _execute_pick_action(
 
 def _format_entry_pick_label(entry: Entry) -> str:
     """Single-line label shown in the fzf / numbered picker."""
-    tags = ", ".join(entry.tags) if entry.tags else "-"
-    return f"[{entry.kind.value}] {entry.title}  {tags}  {str(entry.id)[:8]}"
+    return format_entry_label(entry)
 
 
 def _prompt_with_fzf_or_numbered_list(entries: list[Entry], query: str) -> Entry | None:
