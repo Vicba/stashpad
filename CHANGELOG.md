@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `stash browse` — split-pane TUI for exploring vault entries (searchable list, live preview, tag filters with OR logic)
+- Keyboard shortcuts in browse — copy, open URL, run command, delete, quit; focus tags, list, or search
+- Optional `tui` extra — `poetry install -E tui` installs Textual for browse mode
+- `stash mcp serve` — MCP server for AI assistants (Cursor, Claude Desktop) over stdio
+- MCP tools — `stash_search`, `stash_list`, `stash_get`, `stash_add`
+- Optional `mcp` extra — `poetry install -E mcp` (requires Python 3.10+)
+- `--read-only` on `stash mcp serve` — expose search/list/get without write access
+- Duplicate detection on `stash entry add` — warns when title or content is similar to an existing entry; `--force` / `-F` skips the prompt
+- Duplicate detection on `stash import` — skips similar entries by default; `--ignore-duplicates` imports them anyway; summary lists skipped duplicates
+- JSON mode for add returns `duplicate_candidates` when a duplicate is detected; JSON import summary includes `skipped_duplicates` and `duplicates`
+- Shared `entry_query` module for loading and filtering entries (used by `stash pick` and `stash browse`)
+- MCP integration guide in `docs/mcp.md`
+
+### Changed
+
+- Renamed internal package module from `stash_cli` to `stashpad`
+
+### Development
+
+- Pre-commit hooks, CONTRIBUTING guide, and mypy fixes
+- GitHub Actions workflow to publish release notes from the changelog on tag push
+
 ## v0.6.0 (2026-06-15)
 
 ### Added
@@ -78,5 +104,5 @@ Initial release of **Stash CLI** — a personal developer reference manager.
 - Rich terminal output, shell autocompletion, atomic vault writes
 - NumPy-style docstrings and doctest coverage on core modules
 
-[Unreleased]: https://github.com/Vicba/stash-cli/compare/v0.6.0...HEAD
-[0.1.0]: https://github.com/Vicba/stash-cli/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Vicba/stashpad/compare/v0.6.0...HEAD
+[0.1.0]: https://github.com/Vicba/stashpad/releases/tag/v0.1.0
