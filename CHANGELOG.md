@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## v0.7.0 (2026-06-18)
+
 ### Added
 
 - `stash browse` — split-pane TUI for exploring vault entries (searchable list, live preview, tag filters with OR logic)
@@ -104,5 +106,6 @@ Initial release of **Stash CLI** — a personal developer reference manager.
 - Rich terminal output, shell autocompletion, atomic vault writes
 - NumPy-style docstrings and doctest coverage on core modules
 
-[Unreleased]: https://github.com/Vicba/stashpad/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/Vicba/stashpad/compare/v0.7.0...HEAD
+[v0.7.0]: https://github.com/Vicba/stashpad/releases/tag/v0.7.0
 [0.1.0]: https://github.com/Vicba/stashpad/releases/tag/v0.1.0
