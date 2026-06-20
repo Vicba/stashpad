@@ -20,6 +20,9 @@ htmlcov/
 examples/.demo-vault/
 examples/exports/
 
+# Dev container
+.devcontainer/.stash-dev/
+
 # Editor
 .idea/
 .vscode/
