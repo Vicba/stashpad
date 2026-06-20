@@ -2,6 +2,8 @@
 
 Stashpad can run as an [MCP](https://modelcontextprotocol.io/) (Model Context Protocol) server so AI assistants in **Cursor**, **Claude Desktop**, and other MCP clients can search and read your personal vault while you code.
 
+For agent workflows (when to use MCP vs CLI, setup steps, troubleshooting), install the **stash-mcp-setup** skill — see [Agent skills](agent-skills.md).
+
 The client spawns `stash mcp serve` as a background process and talks to it over **stdio** (stdin/stdout). You do not run the server manually in a terminal.
 
 ## Requirements

@@ -1,0 +1,16 @@
+{
+  "name": "stashpad",
+  "owner": {
+    "name": "Vicba"
+  },
+  "metadata": {
+    "description": "Agent skills for Stashpad — local developer reference vault with setup, capture, search, backup, and MCP integration workflows."
+  },
+  "plugins": [
+    {
+      "name": "stashpad",
+      "source": "./plugins/stashpad",
+      "description": "Agent skills for the stash CLI: vault setup, capture, search, backup, and MCP configuration for Cursor and Claude Desktop."
+    }
+  ]
+}

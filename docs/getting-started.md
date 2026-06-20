@@ -22,8 +22,8 @@ stash --help
 ### Install from source
 
 ```bash
-git clone https://github.com/Vicba/stash-cli.git
-cd stash-cli
+git clone https://github.com/Vicba/stashpad.git
+cd stashpad
 poetry install
 ```
 
@@ -145,4 +145,6 @@ See [`examples/README.md`](../examples/README.md) for the full list.
 
 - [CLI reference](cli-reference.md) — complete command list
 - [Configuration](configuration.md) — environment variables and paths
+- [MCP integration](mcp.md) — connect Cursor or Claude Desktop to your vault
+- [Agent skills](agent-skills.md) — optional workflow guides for AI assistants
 - [Data model](data-model.md) — vault structure and validation rules

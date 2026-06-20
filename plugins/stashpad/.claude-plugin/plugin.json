@@ -1,0 +1,7 @@
+{
+  "name": "stashpad",
+  "version": "0.1.0",
+  "description": "Agent skills for Stashpad — local developer reference vault. Setup, capture, search, backup, and MCP integration workflows for the stash CLI.",
+  "author": { "name": "Vicba" },
+  "keywords": ["stashpad", "stash", "cli", "snippets", "mcp", "developer-tools", "vault"]
+}

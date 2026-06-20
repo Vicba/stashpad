@@ -6,7 +6,7 @@ For deeper technical detail (project layout, architecture, isolated vaults), see
 
 ## Ways to contribute
 
-- Report bugs or suggest features via [GitHub Issues](https://github.com/Vicba/stash-cli/issues)
+- Report bugs or suggest features via [GitHub Issues](https://github.com/Vicba/stashpad/issues)
 - Fix bugs or implement features via pull request
 - Improve documentation, examples, or tests
 - Share feedback on CLI ergonomics and workflows
@@ -18,22 +18,25 @@ Use the issue templates when opening a bug report, feature request, or improveme
 **Requirements:** Python 3.8–3.12, [Poetry](https://python-poetry.org/)
 
 ```bash
-git clone https://github.com/Vicba/stash-cli.git
-cd stash-cli
+git clone https://github.com/Vicba/stashpad.git
+cd stashpad
 poetry install
 ```
 
 ### Dev Container (alternative)
 
-If you use VS Code or Cursor, open the repo and choose **Reopen in Container**. Dependencies (including TUI and MCP extras), pre-commit hooks, and an isolated dev vault are set up via `.devcontainer/post-create.sh`.
+If you use VS Code or Cursor, open the repo and choose **Reopen in Container**. See [docs/devcontainer.md](docs/devcontainer.md) for rebuild, exit, and testing.
+
+### Agent skills
+
+User-facing agent skills live in `plugins/stashpad/skills/`. After editing skills or `install.sh`, verify with:
 
 ```bash
-poetry run poe test
-poetry run poe lint
-poetry run stash --help
+./install.sh list
+./install.sh verify --ide cursor
 ```
 
-Dev vault path: `$STASH_DATA_DIR` (defaults to `.devcontainer/.stash-dev` inside the container). Clipboard features may not work without display forwarding; tests mock the clipboard.
+See [docs/agent-skills.md](docs/agent-skills.md).
 
 Run the CLI locally:
 
@@ -135,7 +138,7 @@ examples/             # runnable scripts and sample vault
 
 ## Questions
 
-Open a [GitHub Discussion or Issue](https://github.com/Vicba/stash-cli/issues) if you are unsure whether a change fits, or want feedback before investing in a large PR.
+Open a [GitHub Discussion or Issue](https://github.com/Vicba/stashpad/issues) if you are unsure whether a change fits, or want feedback before investing in a large PR.
 
 ## License
 

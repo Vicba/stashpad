@@ -82,11 +82,34 @@ stash search "prune"
 stash --json entry list
 ```
 
+### AI assistants
+
+Connect your vault to coding assistants, or teach them Stashpad workflows:
+
+**MCP (recommended)** — lets the assistant search your vault while you code:
+
+```bash
+pip install "stashpad[mcp]"
+stash init --name my-vault
+```
+
+Then configure MCP in Cursor or Claude Desktop — see [docs/mcp.md](docs/mcp.md).
+
+**Agent skills (optional)** — workflow guides for setup, capture, search, backup, and MCP config:
+
+| Client | Install |
+|--------|---------|
+| Cursor / Codex | Clone repo → `./install.sh install --ide cursor` → **restart Cursor** |
+| Claude Code | `claude plugin marketplace add Vicba/stashpad` → `claude plugin install stashpad@stashpad` |
+| Claude Desktop | MCP only — no skills plugin; see [docs/mcp.md](docs/mcp.md) |
+
+`install.sh` is in the repo, not on PyPI. Full guide: [docs/agent-skills.md](docs/agent-skills.md).
+
 From source:
 
 ```bash
-git clone https://github.com/Vicba/stash-cli.git
-cd stash-cli
+git clone https://github.com/Vicba/stashpad.git
+cd stashpad
 poetry install
 poetry install -E tui   # optional: split-pane browse UI
 poetry install -E mcp   # optional: MCP server for Cursor / Claude Desktop
@@ -134,26 +157,17 @@ poetry run poe dev       # dev runner
 
 ### Dev Container
 
-Open the repo in VS Code or Cursor and choose **Reopen in Container**. The container installs Poetry, test dependencies, and optional TUI/MCP extras automatically.
-
-```bash
-poetry run poe test
-poetry run stash --help
-```
-
-The dev vault is isolated at `$STASH_DATA_DIR` (`.devcontainer/.stash-dev`) and does not touch your host vault.
+For contributors: open the repo in VS Code or Cursor and choose **Reopen in Container**. See [docs/devcontainer.md](docs/devcontainer.md) for rebuild, exit, and testing notes.
 
 ## Project structure
 
 ```
-src/stashpad/
-  cli.py              # root app + global callback
-  context.py          # shared AppContext
-  models.py           # Entry, Vault, enums
-  storage.py          # JSON persistence (~/.config/stash/)
-  commands/           # one module per command group
-  mcp/                # MCP service + FastMCP server
+src/stashpad/         # Python CLI, TUI, MCP server
+plugins/stashpad/     # Agent skills plugin (6 skills)
+.devcontainer/        # Contributor dev container
 docs/                 # Reference documentation
+install.sh            # Install skills to Cursor, Codex, Antigravity
+AGENTS.md             # Repo-level agent guidance
 tests/                # CLI tests
 ```
 
