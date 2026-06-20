@@ -9,7 +9,7 @@ Stashpad is CLI-only (Python 3.8–3.12, Typer + Pydantic). There is no server o
 - **Python module:** `stashpad`
 - **Default vault:** `~/.config/stash/vault.json` (override with `STASH_DATA_DIR`, `--config-dir`, or `stash init [data_dir]`)
 - **Scripting:** pass `--json` before subcommands for machine-readable output
-- **Repository:** https://github.com/Vicba/stash-cli
+- **Repository:** https://github.com/Vicba/stashpad
 
 Typical workflow:
 
@@ -27,21 +27,30 @@ stash import --from-file ./backup.json
 
 ## Documentation
 
-- [README](https://raw.githubusercontent.com/Vicba/stash-cli/main/README.md): Project overview, architecture, and quick start
-- [Getting started](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/getting-started.md): Install, init vault, first entries, backup
-- [CLI reference](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/cli-reference.md): All commands, flags, and aliases
-- [Configuration](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/configuration.md): `STASH_*` env vars and vault paths
-- [Data model](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/data-model.md): `vault.json` schema, entries, tags, import/export formats
+- [README](https://raw.githubusercontent.com/Vicba/stashpad/main/README.md): Project overview, architecture, and quick start
+- [Getting started](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/getting-started.md): Install, init vault, first entries, backup
+- [CLI reference](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/cli-reference.md): All commands, flags, and aliases
+- [Configuration](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/configuration.md): `STASH_*` env vars and vault paths
+- [Data model](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/data-model.md): `vault.json` schema, entries, tags, import/export formats
+- [MCP integration](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/mcp.md): Connect Cursor / Claude Desktop to your vault
 
 ## Examples
 
-- [Examples index](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/README.md): Runnable demo scripts and sample data
-- [Daily workflow recipe](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/recipes/daily-workflow.md): Common day-to-day `stash` usage
-- [Backup and restore recipe](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/recipes/backup-and-restore.md): Export/import workflow
-- [Sample entries JSON](https://raw.githubusercontent.com/Vicba/stash-cli/main/examples/data/sample-entries.json): Example import payload
+- [Examples index](https://raw.githubusercontent.com/Vicba/stashpad/main/examples/README.md): Runnable demo scripts and sample data
+- [Daily workflow recipe](https://raw.githubusercontent.com/Vicba/stashpad/main/examples/recipes/daily-workflow.md): Common day-to-day `stash` usage
+- [Backup and restore recipe](https://raw.githubusercontent.com/Vicba/stashpad/main/examples/recipes/backup-and-restore.md): Export/import workflow
+- [Sample entries JSON](https://raw.githubusercontent.com/Vicba/stashpad/main/examples/data/sample-entries.json): Example import payload
+
+## Agent skills
+
+- [Agent skills guide](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/agent-skills.md): Install skills plugin for Cursor, Claude Code, Codex, Antigravity
+- [Plugin README](https://raw.githubusercontent.com/Vicba/stashpad/main/plugins/stashpad/README.md): Six skills — setup, capture, search, backup, MCP setup
+
+Skills: `stashpad` (router), `stash-setup`, `stash-capture`, `stash-search`, `stash-backup`, `stash-mcp-setup`. Cursor/Codex: clone repo and run `./install.sh install --ide cursor`. Claude Code: `claude plugin install stashpad@stashpad`. Claude Desktop: MCP only (no skills).
 
 ## Optional
 
-- [Development guide](https://raw.githubusercontent.com/Vicba/stash-cli/main/docs/development.md): Tests, lint, project layout, contributing
-- [Changelog](https://raw.githubusercontent.com/Vicba/stash-cli/main/CHANGELOG.md): Release history
-- [pyproject.toml](https://raw.githubusercontent.com/Vicba/stash-cli/main/pyproject.toml): Package metadata, dependencies, and entry points
+- [Development guide](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/development.md): Tests, lint, project layout, contributing
+- [Dev container](https://raw.githubusercontent.com/Vicba/stashpad/main/docs/devcontainer.md): Contributor container setup
+- [Changelog](https://raw.githubusercontent.com/Vicba/stashpad/main/CHANGELOG.md): Release history
+- [pyproject.toml](https://raw.githubusercontent.com/Vicba/stashpad/main/pyproject.toml): Package metadata, dependencies, and entry points

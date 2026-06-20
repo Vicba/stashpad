@@ -8,7 +8,7 @@ version = "0.7.0"
 description = "Stashpad — personal developer reference manager CLI."
 authors = ["Victor Barra <victor.barra@live.be>"]
 readme = "README.md"
-repository = "https://github.com/Vicba/stash-cli"
+repository = "https://github.com/Vicba/stashpad"
 
 license = "MIT"
 

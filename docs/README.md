@@ -8,6 +8,8 @@ Reference documentation for **Stashpad** — a personal developer reference mana
 | [CLI reference](cli-reference.md) | All commands, flags, and aliases |
 | [Configuration](configuration.md) | Environment variables, vault location, and settings |
 | [MCP integration](mcp.md) | Connect Cursor / Claude Desktop to your vault |
+| [Agent skills](agent-skills.md) | Install skills plugin for Cursor, Claude Code, Codex |
+| [Dev container](devcontainer.md) | Contributor container setup (VS Code / Cursor) |
 | [Data model](data-model.md) | Vault file format, entries, tags, import/export |
 | [Development](development.md) | Running tests, linting, and project layout |
 

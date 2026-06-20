@@ -5,20 +5,14 @@ Guide for contributors and local development of Stashpad.
 ## Setup
 
 ```bash
-git clone https://github.com/Vicba/stash-cli.git
-cd stash-cli
+git clone https://github.com/Vicba/stashpad.git
+cd stashpad
 poetry install
 ```
 
 ### Dev Container
 
-Open in VS Code or Cursor and choose **Reopen in Container**. The `.devcontainer/` setup installs Poetry, test dependencies, TUI/MCP extras, and pre-commit hooks. An isolated vault is created at `$STASH_DATA_DIR` (`.devcontainer/.stash-dev`).
-
-```bash
-poetry run poe test
-poetry run poe lint
-poetry run stash --help
-```
+Open in VS Code or Cursor and choose **Reopen in Container**. See [devcontainer.md](devcontainer.md) for setup, rebuild, and exit instructions.
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full PR checklist.
 
