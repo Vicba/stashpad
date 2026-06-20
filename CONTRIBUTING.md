@@ -23,6 +23,18 @@ cd stash-cli
 poetry install
 ```
 
+### Dev Container (alternative)
+
+If you use VS Code or Cursor, open the repo and choose **Reopen in Container**. Dependencies (including TUI and MCP extras), pre-commit hooks, and an isolated dev vault are set up via `.devcontainer/post-create.sh`.
+
+```bash
+poetry run poe test
+poetry run poe lint
+poetry run stash --help
+```
+
+Dev vault path: `$STASH_DATA_DIR` (defaults to `.devcontainer/.stash-dev` inside the container). Clipboard features may not work without display forwarding; tests mock the clipboard.
+
 Run the CLI locally:
 
 ```bash

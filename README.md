@@ -132,6 +132,17 @@ poetry run poe lint      # lint
 poetry run poe dev       # dev runner
 ```
 
+### Dev Container
+
+Open the repo in VS Code or Cursor and choose **Reopen in Container**. The container installs Poetry, test dependencies, and optional TUI/MCP extras automatically.
+
+```bash
+poetry run poe test
+poetry run stash --help
+```
+
+The dev vault is isolated at `$STASH_DATA_DIR` (`.devcontainer/.stash-dev`) and does not touch your host vault.
+
 ## Project structure
 
 ```

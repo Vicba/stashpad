@@ -10,6 +10,18 @@ cd stash-cli
 poetry install
 ```
 
+### Dev Container
+
+Open in VS Code or Cursor and choose **Reopen in Container**. The `.devcontainer/` setup installs Poetry, test dependencies, TUI/MCP extras, and pre-commit hooks. An isolated vault is created at `$STASH_DATA_DIR` (`.devcontainer/.stash-dev`).
+
+```bash
+poetry run poe test
+poetry run poe lint
+poetry run stash --help
+```
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full PR checklist.
+
 ## Common tasks
 
 | Task | Command |
